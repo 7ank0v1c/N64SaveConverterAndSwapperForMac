@@ -136,8 +136,39 @@ target_menu = ttk.Combobox(root, textvariable=target_var, values=target_list, st
 target_menu.grid(row=3, column=1, padx=10, pady=5)
 
 Label(root, text="Save File Target Type:").grid(row=4, column=0, sticky=W, padx=10, pady=5)
-target_type_menu = ttk.Combobox(root, textvariable=target_type_var, values=file_types, state="readonly")
+
+# Dynamic target type menu
+target_type_menu = ttk.Combobox(root, textvariable=target_type_var, state="readonly")
 target_type_menu.grid(row=4, column=1, padx=10, pady=5)
+
+# Function to update target types based on source, source type, and target
+def update_target_type_menu(*args):
+    src = source_var.get()
+    src_type = source_type_var.get()
+    tgt = target_var.get()
+    valid_output_types = set()
+
+    # Get all matching types from the conversion table
+    for key in conversion_table.keys():
+        parts = key.split("-")
+        if src == parts[0] and src_type == parts[1] and tgt == parts[2]:
+            valid_output_types.add(parts[3])
+
+    # Allow same-type conversion for SRA, FLA, MPK, SRM
+    if src_type in ["SRAM (.sra)", "FlashRAM (.fla)", "Controller Pak (.mpk)", "Retroarch Save (.srm)"]:
+        valid_output_types.add(src_type)
+
+    # Update the target_type_menu values
+    target_type_menu['values'] = sorted(list(valid_output_types))
+
+    # Reset current selection if invalid
+    if target_type_var.get() not in valid_output_types:
+        target_type_var.set(sorted(list(valid_output_types))[0] if valid_output_types else "")
+
+# Trace changes to update dynamically
+source_var.trace_add("write", lambda *args: update_target_type_menu())
+source_type_var.trace_add("write", lambda *args: update_target_type_menu())
+target_var.trace_add("write", lambda *args: update_target_type_menu())
 
 # Trim/Pad checkbox
 Checkbutton(root, text="Pad/trim to standard file type size", variable=trim_pad_var).grid(row=5, column=1, sticky=W, padx=10, pady=5)
