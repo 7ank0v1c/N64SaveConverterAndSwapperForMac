@@ -174,6 +174,7 @@ root = Tk()
 root.title("N64 Save File Converter")
 root.geometry("730x380")
 root.resizable(False, False)
+root.grid_columnconfigure(0, minsize=180)  # ensures column 1 widgets align horizontally
 
 # Load N64 logo and set as window/dock icon
 try:
@@ -199,7 +200,6 @@ target_var = StringVar()
 target_type_var = StringVar()
 trim_pad_var = BooleanVar()
 byteswap_var = StringVar(value="None")
-advanced_var = BooleanVar(value=False)
 
 # GUI Components
 def browse_file():
@@ -244,24 +244,17 @@ def update_target_type_menu(*args):
     tgt = target_var.get()
     valid_output_types = set()
 
-    if advanced_var.get():
-        # Advanced mode: show all possible conversions from conversion table
-        for key in conversion_table.keys():
-            parts = key.split("-")
-            if src == parts[0] and src_type == parts[1] and tgt == parts[2]:
-                valid_output_types.add(parts[3])
-    else:
-        # Basic mode: show only "realistic" options
-        if src_type == SRM_LABEL:
-            # Allow SRM -> any supported save type (EEP, SRA, FLA, MPK)
-            valid_output_types.update([EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL])
-        elif tgt == PJ64_LABEL:
-            if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL, EEP_LABEL]:
-                valid_output_types.add(src_type)
-        elif tgt == RA_LABEL:
-            valid_output_types.add(SRM_LABEL)
-        elif tgt in [WII_LABEL, NATIVE_LABEL]:
+    # Basic mode: show only "realistic" options
+    if src_type == SRM_LABEL:
+        # Allow SRM -> any supported save type (EEP, SRA, FLA, MPK)
+        valid_output_types.update([EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL])
+    elif tgt == PJ64_LABEL:
+        if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL, EEP_LABEL]:
             valid_output_types.add(src_type)
+    elif tgt == RA_LABEL:
+        valid_output_types.add(SRM_LABEL)
+    elif tgt in [WII_LABEL, NATIVE_LABEL]:
+        valid_output_types.add(src_type)
 
     valid_output_types = sorted(list(valid_output_types))
     target_type_menu['values'] = valid_output_types
@@ -273,13 +266,14 @@ def update_target_type_menu(*args):
 source_var.trace_add("write", update_target_type_menu)
 source_type_var.trace_add("write", update_target_type_menu)
 target_var.trace_add("write", update_target_type_menu)
-advanced_var.trace_add("write", update_target_type_menu)
 
-# Advanced Mode toggle
-Checkbutton(root, text="Advanced Mode (show all target types)", variable=advanced_var).grid(row=5, column=0, columnspan=2, sticky=W, padx=10, pady=5)
-
-# Trim/Pad checkbox
-Checkbutton(root, text="Pad/trim to standard file type size", variable=trim_pad_var).grid(row=5, column=1, sticky=W, padx=10, pady=5)
+Checkbutton(
+    root,
+    text="Pad/trim to standard file type size",
+    variable=trim_pad_var,
+    anchor="e",
+    justify="center"
+).grid(row=5, column=1, sticky=W+E, padx=100, pady=5)
 
 # Byte swap
 Label(root, text="Force Byte Swap:").grid(row=6, column=0, sticky=W, padx=10, pady=5)
@@ -306,7 +300,6 @@ def update_byteswap_menu(*args):
 # Trace variable changes to refresh byte-swap dropdown automatically
 source_type_var.trace_add("write", update_byteswap_menu)
 target_type_var.trace_add("write", update_byteswap_menu)
-advanced_var.trace_add("write", update_byteswap_menu)
 
 # Convert Function
 def convert_save():
