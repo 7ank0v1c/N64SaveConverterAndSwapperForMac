@@ -34,7 +34,7 @@ WII_LABEL = "Wii/WiiU/Everdrive64"
 # File type lists
 file_types = [EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]
 source_list = [NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL]
-target_list = [PJ64_LABEL, RA_LABEL, WII_LABEL]
+target_list = [NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL]
 
 # Automatic file type detection
 def detect_file_type(filename):
@@ -125,8 +125,18 @@ def new_filename(filename, extension):
 # GUI setup
 root = Tk()
 root.title("N64 Save File Converter")
-root.geometry("700x300")
+root.geometry("730x380")
 root.resizable(False, False)
+
+# Load N64 logo
+try:
+    logo_path = os.path.join(os.path.dirname(__file__), "n64_logo.png")
+    logo_img = PhotoImage(file=logo_path)
+    logo_label = Label(root, image=logo_img)
+    logo_label.image = logo_img  # keep a reference!
+    logo_label.grid(row=7, column=2, padx=10, pady=10, sticky=E)
+except Exception as e:
+    print(f"Could not load logo: {e}")
 
 # Variables
 input_path = StringVar()
@@ -138,16 +148,6 @@ trim_pad_var = BooleanVar()
 byteswap_var = StringVar(value="None")
 
 # GUI Components
-Label(root, text="Select N64 Save File:").grid(row=0, column=0, sticky=W, padx=10, pady=5)
-Entry(root, textvariable=input_path, width=45).grid(row=0, column=1, padx=10, pady=5)
-Button(root, text="Browse", command=lambda: input_path.set(filedialog.askopenfilename(filetypes=[("N64 Saves", "*.eep *.sra *.fla *.mpk *.srm")])))\
-    .grid(row=0, column=2, padx=10, pady=5)
-
-# Source
-Label(root, text="Save File Source Type:").grid(row=1, column=0, sticky=W, padx=10, pady=5)
-source_type_label = Label(root, textvariable=source_type_var, relief="flat", width=22, anchor=W)
-source_type_label.grid(row=1, column=1, padx=10, pady=5)
-
 def browse_file():
     path = filedialog.askopenfilename(filetypes=[("N64 Saves", "*.eep *.sra *.fla *.mpk *.srm")])
     if path:
@@ -158,6 +158,15 @@ def browse_file():
             source_type_var.set(selected_type)
         else:
             source_type_var.set("")  # fallback if detection fails
+
+Label(root, text="Select N64 Save File:").grid(row=0, column=0, sticky=W, padx=10, pady=5)
+Entry(root, textvariable=input_path, width=45).grid(row=0, column=1, padx=10, pady=5)
+Button(root, text="Browse", command=browse_file).grid(row=0, column=2, padx=10, pady=5)
+
+# Source
+Label(root, text="Save File Source Type:").grid(row=1, column=0, sticky=W, padx=10, pady=5)
+source_type_label = Label(root, textvariable=source_type_var, relief="flat", width=22, anchor=W)
+source_type_label.grid(row=1, column=1, padx=10, pady=5)
 
 Label(root, text="Save File Source:").grid(row=2, column=0, sticky=W, padx=10, pady=5)
 source_menu = ttk.Combobox(root, textvariable=source_var, values=source_list, state="readonly")
@@ -231,7 +240,7 @@ def update_byteswap_menu(*args):
 source_type_var.trace_add("write", lambda *args: update_byteswap_menu())
 target_type_var.trace_add("write", lambda *args: update_byteswap_menu())
 
-# Convert button
+# Convert Function
 def convert_save():
     path = input_path.get()
     if not path or not os.path.exists(path):
@@ -241,7 +250,7 @@ def convert_save():
     data = read_bytes(path)
     if not data:
         return
-
+    
     # Determine conversion
     src = source_var.get()
     src_type = source_type_var.get()
@@ -261,10 +270,30 @@ def convert_save():
         swap_required = False
         extension = os.path.splitext(path)[1]
     
-    # Force SRA->SRM conversion if target type is SRM and source type is SRA
+    # --- Handle SRM-specific conversions properly ---
     if src_type == SRA_LABEL and tgt_type == SRM_LABEL:
+        # Expanding SRAM (32 KB) into RetroArch SRM (296960 bytes)
         tgt_size = SIZE_SRM
         offset = SIZE_SRA_SRM_OFFSET
+        swap_required = True
+        extension = SRM_EXT
+
+    elif src_type == SRM_LABEL and tgt_type == SRA_LABEL:
+        # Extracting SRAM section from a RetroArch SRM
+        tgt_size = SIZE_SRA
+        offset = -SIZE_SRA_SRM_OFFSET
+        swap_required = True
+        extension = SRA_EXT
+
+    elif src_type == SRM_LABEL and tgt_type == FLA_LABEL:
+        tgt_size = SIZE_FLA
+        offset = -SIZE_FLA_SRM_OFFSET
+        swap_required = True
+        extension = FLA_EXT
+
+    elif src_type == FLA_LABEL and tgt_type == SRM_LABEL:
+        tgt_size = SIZE_SRM
+        offset = SIZE_FLA_SRM_OFFSET
         swap_required = True
         extension = SRM_EXT
 
@@ -299,6 +328,7 @@ def convert_save():
     if write_bytes(data, out_path):
         messagebox.showinfo("Success", f"File converted and saved as:\n{out_path}")
 
-Button(root, text="Browse", command=browse_file).grid(row=0, column=2, padx=10, pady=5)
+# Convert button
+Button(root, text="Convert", width=20, command=convert_save).grid(row=7, column=1, pady=15)
 
 root.mainloop()
