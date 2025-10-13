@@ -390,7 +390,7 @@ def convert_save():
     data = resize_bytes(data, tgt_size, offset)
 
     # Determine swap size using the new helper function
-     swap_size = determine_swap_size(src_type, tgt_type, byteswap_var.get(), swap_required)
+    swap_size = determine_swap_size(src_type, tgt_type, byteswap_var.get(), swap_required)
     if swap_size > 1:
         data = byteswap(data, swap_size)
 
