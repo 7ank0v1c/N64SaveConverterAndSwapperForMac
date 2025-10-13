@@ -132,6 +132,10 @@ def resize_bytes(data, new_size, offset=0):
     Positive offset: copy data starting at offset in new array.
     Negative offset: trim data from the start.
     """
+    if offset < 0:
+        data = data[abs(offset):]
+        offset = 0
+
     result = bytearray(new_size)
     for i in range(len(data)):
         dest_index = i + offset
@@ -149,10 +153,8 @@ def byteswap(data, swap_size):
     return bytes(swapped)
 
 def new_filename(filename, extension):
-    base, ext = os.path.splitext(filename)
-    if ext == extension:
-        return base + "#" + extension
-    return base + extension
+    base, _ = os.path.splitext(filename)
+    return f"{base}{extension}"
 
 # GUI setup
 root = Tk()
@@ -164,11 +166,16 @@ root.resizable(False, False)
 try:
     logo_path = os.path.join(os.path.dirname(__file__), "n64_logo.png")
     logo_img = PhotoImage(file=logo_path)
-    logo_label = Label(root, image=logo_img)
-    logo_label.image = logo_img  # keep a reference!
-    logo_label.grid(row=7, column=2, padx=10, pady=10, sticky=E)
-except Exception as e:
-    print(f"Could not load logo: {e}")
+except Exception:
+    logo_img = None
+
+logo_label = Label(
+    root,
+    image=logo_img if logo_img else None,
+    text="N64 Logo" if not logo_img else "",
+    compound="top"
+)
+logo_label.grid(row=7, column=2, padx=10, pady=10, sticky=E)
 
 # Variables
 input_path = StringVar()
@@ -178,6 +185,7 @@ target_var = StringVar()
 target_type_var = StringVar()
 trim_pad_var = BooleanVar()
 byteswap_var = StringVar(value="None")
+advanced_var = BooleanVar(value=False)
 
 # GUI Components
 def browse_file():
@@ -230,32 +238,23 @@ def update_target_type_menu(*args):
                 valid_output_types.add(parts[3])
     else:
         # Basic mode: show only "realistic" options
-        if tgt == PJ64_LABEL:
-            # Project64 can accept SRA, FLA, MPK depending on source
+        if src_type == SRM_LABEL:
+            # Allow SRM -> any supported save type (EEP, SRA, FLA, MPK)
+            valid_output_types.update([EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL])
+        elif tgt == PJ64_LABEL:
             if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL, EEP_LABEL]:
                 valid_output_types.add(src_type)
         elif tgt == RA_LABEL:
-            # Retroarch always uses SRM
             valid_output_types.add(SRM_LABEL)
         elif tgt in [WII_LABEL, NATIVE_LABEL]:
-            # WII / Native: original type
             valid_output_types.add(src_type)
-
-        # Always allow SRM → any type (extraction)
-        if src_type == SRM_LABEL:
-            if tgt in [PJ64_LABEL, WII_LABEL, NATIVE_LABEL]:
-                # Only show types that exist in conversion table for SRM → target
-                for key in conversion_table.keys():
-                    parts = key.split("-")
-                    if parts[0] == src_type or parts[0] == RA_LABEL:
-                        if parts[2] == tgt:
-                            valid_output_types.add(parts[3])
 
     valid_output_types = sorted(list(valid_output_types))
     target_type_menu['values'] = valid_output_types
 
     if target_type_var.get() not in valid_output_types:
         target_type_var.set(valid_output_types[0] if valid_output_types else "")
+
 # Update the traces
 source_var.trace_add("write", update_target_type_menu)
 source_type_var.trace_add("write", update_target_type_menu)
@@ -263,7 +262,6 @@ target_var.trace_add("write", update_target_type_menu)
 advanced_var.trace_add("write", update_target_type_menu)
 
 # Advanced Mode toggle
-advanced_var = BooleanVar(value=False)
 Checkbutton(root, text="Advanced Mode (show all target types)", variable=advanced_var).grid(row=5, column=0, columnspan=2, sticky=W, padx=10, pady=5)
 
 # Trim/Pad checkbox
@@ -275,15 +273,19 @@ byteswap_menu = ttk.Combobox(root, textvariable=byteswap_var, values=["None", "2
 byteswap_menu.grid(row=6, column=1, padx=10, pady=5)
 
 def update_byteswap_menu(*args):
-    # Show only for types that can benefit
-    if source_type_var.get() in [SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]:
+    src_type = source_type_var.get()
+    tgt_type = target_type_var.get()
+    # Allow byte-swapping only for formats where endianess matters
+    if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]:
         byteswap_menu.config(state="readonly")
     else:
-        byteswap_menu.set("None")
+        byteswap_var.set("None")
         byteswap_menu.config(state="disabled")
 
-source_type_var.trace_add("write", lambda *args: update_byteswap_menu())
-target_type_var.trace_add("write", lambda *args: update_byteswap_menu())
+# Trace variable changes to refresh byte-swap dropdown automatically
+source_type_var.trace_add("write", update_byteswap_menu)
+target_type_var.trace_add("write", update_byteswap_menu)
+advanced_var.trace_add("write", update_byteswap_menu)
 
 # Convert Function
 def convert_save():
@@ -375,7 +377,7 @@ def convert_save():
             return 2
         return 1
 
-    swap_size = get_swap(src_type, tgt_type)
+    swap_size = 2 if swap_required else 1
     if swap_size > 1:
         data = byteswap(data, swap_size)
 
@@ -403,5 +405,9 @@ def convert_save():
 
 # Convert button
 Button(root, text="Convert", width=20, command=convert_save).grid(row=7, column=1, pady=15)
+
+update_byteswap_menu()
+
+update_target_type_menu()
 
 root.mainloop()
