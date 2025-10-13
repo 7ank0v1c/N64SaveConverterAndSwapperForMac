@@ -152,6 +152,19 @@ def byteswap(data, swap_size):
         swapped[i:i+len(chunk)] = chunk[::-1]
     return bytes(swapped)
 
+def determine_swap_size(src_type, tgt_type, user_choice, swap_required_from_table=False):
+    """
+    Returns swap size in bytes based on user selection and table flag.
+    'Default' uses only the conversion table (swap_required_from_table).
+    """
+    if user_choice == "2 bytes":
+        return 2
+    elif user_choice == "4 bytes":
+        return 4
+    elif user_choice == "Default":
+        return 2 if swap_required_from_table else 1
+    return 1
+
 def new_filename(filename, extension):
     base, _ = os.path.splitext(filename)
     return f"{base}{extension}"
@@ -268,8 +281,13 @@ Checkbutton(root, text="Advanced Mode (show all target types)", variable=advance
 Checkbutton(root, text="Pad/trim to standard file type size", variable=trim_pad_var).grid(row=5, column=1, sticky=W, padx=10, pady=5)
 
 # Byte swap
-Label(root, text="Byte Swap Size:").grid(row=6, column=0, sticky=W, padx=10, pady=5)
-byteswap_menu = ttk.Combobox(root, textvariable=byteswap_var, values=["None", "2 bytes", "3 bytes", "4 bytes"], state="readonly")
+Label(root, text="Byte Swap:").grid(row=6, column=0, sticky=W, padx=10, pady=5)
+byteswap_menu = ttk.Combobox(
+    root,
+    textvariable=byteswap_var,
+    values=["Default", "2 bytes", "4 bytes"],  # removed 3 bytes, 'Default' replaces 'None'
+    state="readonly"
+)
 byteswap_menu.grid(row=6, column=1, padx=10, pady=5)
 
 def update_byteswap_menu(*args):
@@ -278,8 +296,10 @@ def update_byteswap_menu(*args):
     # Allow byte-swapping only for formats where endianess matters
     if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]:
         byteswap_menu.config(state="readonly")
+        if byteswap_var.get() not in ["Default", "2 bytes", "4 bytes"]:
+            byteswap_var.set("Default")
     else:
-        byteswap_var.set("None")
+        byteswap_var.set("Default")
         byteswap_menu.config(state="disabled")
 
 # Trace variable changes to refresh byte-swap dropdown automatically
@@ -369,15 +389,8 @@ def convert_save():
     # Resize / pad / trim
     data = resize_bytes(data, tgt_size, offset)
 
-    # Determine swap size (JS-style logic)
-    def get_swap(src_type, tgt_type):
-        if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL] and tgt_type in [PJ64_LABEL, RA_LABEL]:
-            return 2
-        if src_type == SRM_LABEL and tgt_type in [SRA_LABEL, FLA_LABEL]:
-            return 2
-        return 1
-
-    swap_size = 2 if swap_required else 1
+    # Determine swap size using the new helper function
+     swap_size = determine_swap_size(src_type, tgt_type, byteswap_var.get(), swap_required)
     if swap_size > 1:
         data = byteswap(data, swap_size)
 
