@@ -15,7 +15,7 @@ SIZE_FLA = 131072
 SIZE_MPK = 131072
 SIZE_SRM = 296960
 
-SIZE_SRA_SRM_OFFSET = 133120
+SIZE_SRA_SRM_OFFSET = 133120  # SRA 32 KB will sit inside 296960-byte SRM
 SIZE_FLA_SRM_OFFSET = SIZE_SRM - SIZE_FLA
 SIZE_MPK_SRM_OFFSET = 2048
 
@@ -35,6 +35,22 @@ WII_LABEL = "Wii/WiiU/Everdrive64"
 file_types = [EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]
 source_list = [NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL]
 target_list = [PJ64_LABEL, RA_LABEL, WII_LABEL]
+
+# Automatic file type detection
+def detect_file_type(filename):
+    ext = os.path.splitext(filename)[1].lower()
+    if ext == EEP_EXT:
+        return EEP_LABEL
+    elif ext == SRA_EXT:
+        return SRA_LABEL
+    elif ext == FLA_EXT:
+        return FLA_LABEL
+    elif ext == MPK_EXT:
+        return MPK_LABEL
+    elif ext == SRM_EXT:
+        return SRM_LABEL
+    else:
+        return None
 
 # Conversion table
 conversion_table = {
@@ -79,10 +95,16 @@ def write_bytes(data, path):
         return False
 
 def resize_bytes(data, new_size, offset=0):
+    """
+    Resize data to new_size bytes.
+    Positive offset: copy data starting at offset in new array.
+    Negative offset: trim data from the start.
+    """
     result = bytearray(new_size)
-    for i in range(new_size):
-        if 0 <= i - offset < len(data):
-            result[i] = data[i - offset]
+    for i in range(len(data)):
+        dest_index = i + offset
+        if 0 <= dest_index < new_size:
+            result[dest_index] = data[i]
     return bytes(result)
 
 def byteswap(data, swap_size):
@@ -108,8 +130,8 @@ root.resizable(False, False)
 
 # Variables
 input_path = StringVar()
-source_var = StringVar()
 source_type_var = StringVar()
+source_var = StringVar()
 target_var = StringVar()
 target_type_var = StringVar()
 trim_pad_var = BooleanVar()
@@ -117,18 +139,29 @@ byteswap_var = StringVar(value="None")
 
 # GUI Components
 Label(root, text="Select N64 Save File:").grid(row=0, column=0, sticky=W, padx=10, pady=5)
-Entry(root, textvariable=input_path, width=50).grid(row=0, column=1, padx=10, pady=5)
+Entry(root, textvariable=input_path, width=45).grid(row=0, column=1, padx=10, pady=5)
 Button(root, text="Browse", command=lambda: input_path.set(filedialog.askopenfilename(filetypes=[("N64 Saves", "*.eep *.sra *.fla *.mpk *.srm")])))\
     .grid(row=0, column=2, padx=10, pady=5)
 
 # Source
-Label(root, text="Save File Source:").grid(row=1, column=0, sticky=W, padx=10, pady=5)
-source_menu = ttk.Combobox(root, textvariable=source_var, values=source_list, state="readonly")
-source_menu.grid(row=1, column=1, padx=10, pady=5)
+Label(root, text="Save File Source Type:").grid(row=1, column=0, sticky=W, padx=10, pady=5)
+source_type_label = Label(root, textvariable=source_type_var, relief="flat", width=22, anchor=W)
+source_type_label.grid(row=1, column=1, padx=10, pady=5)
 
-Label(root, text="Save File Source Type:").grid(row=2, column=0, sticky=W, padx=10, pady=5)
-source_type_menu = ttk.Combobox(root, textvariable=source_type_var, values=file_types, state="readonly")
-source_type_menu.grid(row=2, column=1, padx=10, pady=5)
+def browse_file():
+    path = filedialog.askopenfilename(filetypes=[("N64 Saves", "*.eep *.sra *.fla *.mpk *.srm")])
+    if path:
+        input_path.set(path)
+        # Detect type
+        selected_type = detect_file_type(path)
+        if selected_type in file_types:  # ensure it’s valid
+            source_type_var.set(selected_type)
+        else:
+            source_type_var.set("")  # fallback if detection fails
+
+Label(root, text="Save File Source:").grid(row=2, column=0, sticky=W, padx=10, pady=5)
+source_menu = ttk.Combobox(root, textvariable=source_var, values=source_list, state="readonly")
+source_menu.grid(row=2, column=1, padx=10, pady=5)
 
 # Target
 Label(root, text="Save File Target:").grid(row=3, column=0, sticky=W, padx=10, pady=5)
@@ -216,48 +249,56 @@ def convert_save():
     tgt_type = target_type_var.get()
     key = f"{src}-{src_type}-{tgt}-{tgt_type}"
 
-    # Determine conversion parameters
-    if key in conversion_table:
-        src_size, tgt_size, offset, swap_required, extension = conversion_table[key]
+    # Always use conversion table if exists, otherwise fallback to original size
+    conv = conversion_table.get(key)
+    if conv:
+        src_size, tgt_size, offset, swap_required, extension = conv
     else:
-        # Default: allow same type conversion
-        src_size = tgt_size = len(data)
+        # fallback to original size
+        src_size = len(data)
+        tgt_size = len(data)
         offset = 0
         swap_required = False
         extension = os.path.splitext(path)[1]
+    
+    # Force SRA->SRM conversion if target type is SRM and source type is SRA
+    if src_type == SRA_LABEL and tgt_type == SRM_LABEL:
+        tgt_size = SIZE_SRM
+        offset = SIZE_SRA_SRM_OFFSET
+        swap_required = True
+        extension = SRM_EXT
 
-    # Apply trimming/padding
-    if trim_pad_var.get():
-        data = resize_bytes(data, tgt_size, offset)
+    # Resize/trim to target size
+    data = resize_bytes(data, tgt_size, offset)
 
-    # Apply byte swapping if requested
+    # Apply byte swapping if requested or required by conversion table
     swap_map = {"None": 1, "2 bytes": 2, "3 bytes": 3, "4 bytes": 4}
     swap_size = swap_map.get(byteswap_var.get(), 1)
-    if swap_size > 1:
+    if swap_required or swap_size > 1:
         data = byteswap(data, swap_size)
 
-# Determine output extension based on target type selection
-target_ext_map = {
-    EEP_LABEL: EEP_EXT,
-    SRA_LABEL: SRA_EXT,
-    FLA_LABEL: FLA_EXT,
-    MPK_LABEL: MPK_EXT,
-    SRM_LABEL: SRM_EXT
-}
-out_ext = target_ext_map.get(tgt_type, os.path.splitext(path)[1])
+    # Determine output extension based on target type selection
+    target_ext_map = {
+        EEP_LABEL: EEP_EXT,
+        SRA_LABEL: SRA_EXT,
+        FLA_LABEL: FLA_EXT,
+        MPK_LABEL: MPK_EXT,
+        SRM_LABEL: SRM_EXT
+    }
+    out_ext = target_ext_map.get(tgt_type, os.path.splitext(path)[1])
 
-# Determine output filename
-out_path = filedialog.asksaveasfilename(
-    initialfile=new_filename(os.path.basename(path), out_ext),
-    defaultextension=out_ext,
-    filetypes=[("N64 Save Files", f"*{out_ext}")]
-)
+    # Determine output filename
+    out_path = filedialog.asksaveasfilename(
+        initialfile=new_filename(os.path.basename(path), out_ext),
+        defaultextension=out_ext,
+        filetypes=[("N64 Save Files", f"*{out_ext}")]
+    )
     if not out_path:
         return
 
     if write_bytes(data, out_path):
         messagebox.showinfo("Success", f"File converted and saved as:\n{out_path}")
 
-Button(root, text="Convert", command=convert_save, width=20).grid(row=7, column=1, padx=10, pady=20)
+Button(root, text="Browse", command=browse_file).grid(row=0, column=2, padx=10, pady=5)
 
 root.mainloop()
