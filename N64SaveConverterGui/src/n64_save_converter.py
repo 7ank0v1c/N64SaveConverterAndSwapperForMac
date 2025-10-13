@@ -175,10 +175,11 @@ root.title("N64 Save File Converter")
 root.geometry("730x380")
 root.resizable(False, False)
 
-# Load N64 logo
+# Load N64 logo and set as window/dock icon
 try:
     logo_path = os.path.join(os.path.dirname(__file__), "n64_logo.png")
     logo_img = PhotoImage(file=logo_path)
+    root.iconphoto(True, logo_img)  # sets icon for window and taskbar/dock
 except Exception:
     logo_img = None
 
@@ -281,11 +282,11 @@ Checkbutton(root, text="Advanced Mode (show all target types)", variable=advance
 Checkbutton(root, text="Pad/trim to standard file type size", variable=trim_pad_var).grid(row=5, column=1, sticky=W, padx=10, pady=5)
 
 # Byte swap
-Label(root, text="Byte Swap:").grid(row=6, column=0, sticky=W, padx=10, pady=5)
+Label(root, text="Force Byte Swap:").grid(row=6, column=0, sticky=W, padx=10, pady=5)
 byteswap_menu = ttk.Combobox(
     root,
     textvariable=byteswap_var,
-    values=["Default", "2 bytes", "4 bytes"],  # removed 3 bytes, 'Default' replaces 'None'
+    values=["Default", "2 bytes", "4 bytes"],
     state="readonly"
 )
 byteswap_menu.grid(row=6, column=1, padx=10, pady=5)
