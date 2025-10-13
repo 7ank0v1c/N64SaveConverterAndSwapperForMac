@@ -236,12 +236,22 @@ def convert_save():
     if swap_size > 1:
         data = byteswap(data, swap_size)
 
-    # Determine output filename
-    out_path = filedialog.asksaveasfilename(
-        initialfile=new_filename(os.path.basename(path), extension),
-        defaultextension=extension,
-        filetypes=[("N64 Save Files", f"*{extension}")]
-    )
+# Determine output extension based on target type selection
+target_ext_map = {
+    EEP_LABEL: EEP_EXT,
+    SRA_LABEL: SRA_EXT,
+    FLA_LABEL: FLA_EXT,
+    MPK_LABEL: MPK_EXT,
+    SRM_LABEL: SRM_EXT
+}
+out_ext = target_ext_map.get(tgt_type, os.path.splitext(path)[1])
+
+# Determine output filename
+out_path = filedialog.asksaveasfilename(
+    initialfile=new_filename(os.path.basename(path), out_ext),
+    defaultextension=out_ext,
+    filetypes=[("N64 Save Files", f"*{out_ext}")]
+)
     if not out_path:
         return
 
