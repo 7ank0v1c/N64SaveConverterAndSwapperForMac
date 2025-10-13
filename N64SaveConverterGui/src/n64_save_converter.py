@@ -214,7 +214,17 @@ def browse_file():
             source_type_var.set("")  # fallback if detection fails
 
 Label(root, text="Select N64 Save File:").grid(row=0, column=0, sticky=W, padx=10, pady=5)
-Entry(root, textvariable=input_path, width=45).grid(row=0, column=1, padx=10, pady=5)
+directory_entry = Entry(root, textvariable=input_path, width=45)
+directory_entry.grid(row=0, column=1, padx=10, pady=5)
+
+# Always scroll Entry view to the end when text changes or user edits
+def scroll_to_end(*args):
+    root.after_idle(lambda: directory_entry.xview_moveto(1))
+
+input_path.trace_add("write", scroll_to_end)
+directory_entry.bind("<KeyRelease>", lambda e: directory_entry.xview_moveto(1))
+directory_entry.bind("<<Paste>>", lambda e: root.after_idle(lambda: directory_entry.xview_moveto(1)))
+
 Button(root, text="Browse", command=browse_file).grid(row=0, column=2, padx=10, pady=5)
 
 # Source
