@@ -148,27 +148,36 @@ def update_target_type_menu(*args):
     tgt = target_var.get()
     valid_output_types = set()
 
-    # Get all matching types from the conversion table
+    # Collect all matching types from the conversion table
     for key in conversion_table.keys():
         parts = key.split("-")
         if src == parts[0] and src_type == parts[1] and tgt == parts[2]:
             valid_output_types.add(parts[3])
 
-    # Allow same-type conversion for SRA, FLA, MPK, SRM
-    if src_type in ["SRAM (.sra)", "FlashRAM (.fla)", "Controller Pak (.mpk)", "Retroarch Save (.srm)"]:
+    # Additional logic depending on the target app
+    if tgt == PJ64_LABEL:
+        # Project64 can accept SRA, FLA, MPK depending on source
+        if src_type in [SRA_LABEL, FLA_LABEL, MPK_LABEL, EEP_LABEL]:
+            valid_output_types.add(src_type)
+    elif tgt == RA_LABEL:
+        # Retroarch always uses SRM
+        valid_output_types.add(SRM_LABEL)
+    elif tgt == WII_LABEL:
+        # WII/native can accept the original type
         valid_output_types.add(src_type)
 
-    # Update the target_type_menu values
-    target_type_menu['values'] = sorted(list(valid_output_types))
+    # Sort and update menu
+    valid_output_types = sorted(list(valid_output_types))
+    target_type_menu['values'] = valid_output_types
 
-    # Reset current selection if invalid
+    # Auto-select first valid option if current is invalid
     if target_type_var.get() not in valid_output_types:
-        target_type_var.set(sorted(list(valid_output_types))[0] if valid_output_types else "")
+        target_type_var.set(valid_output_types[0] if valid_output_types else "")
 
-# Trace changes to update dynamically
-source_var.trace_add("write", lambda *args: update_target_type_menu())
-source_type_var.trace_add("write", lambda *args: update_target_type_menu())
-target_var.trace_add("write", lambda *args: update_target_type_menu())
+# Update the traces
+source_var.trace_add("write", update_target_type_menu)
+source_type_var.trace_add("write", update_target_type_menu)
+target_var.trace_add("write", update_target_type_menu)
 
 # Trim/Pad checkbox
 Checkbutton(root, text="Pad/trim to standard file type size", variable=trim_pad_var).grid(row=5, column=1, sticky=W, padx=10, pady=5)
