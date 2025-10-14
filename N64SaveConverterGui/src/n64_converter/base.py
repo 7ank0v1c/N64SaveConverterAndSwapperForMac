@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
 # Constants
-from constants import *
+from core.constants import *
 
 # Automatic file type detection
 def detect_file_type(filename):
