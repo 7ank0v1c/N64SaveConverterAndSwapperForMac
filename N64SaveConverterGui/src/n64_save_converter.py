@@ -393,7 +393,6 @@ target_type_var.trace_add("write", update_byteswap_menu)
 
 # --- Updated Log Function ---
 from datetime import datetime
-
 def log(message, key=None, level="INFO"):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -429,17 +428,6 @@ def log(message, key=None, level="INFO"):
     log_box.insert(END, f" {message}\n", tag)
     log_box.see(END)
     log_box.update_idletasks()  # <-- Force real-time update
-
-    # --- Secondary log window ---
-    if log_window and log_window.winfo_exists():
-        log_window.log_text.config(state="normal")
-        log_window.log_text.insert(END, f"[{timestamp}]", "timestamp")
-        if key and "Using conversion table entry" not in message:
-            log_window.log_text.insert(END, f" [{key}]")
-        log_window.log_text.insert(END, f" {message}\n", tag)
-        log_window.log_text.see(END)
-        log_window.log_text.update_idletasks()  # <-- Force real-time update
-        log_window.log_text.config(state="disabled")
 
     # --- Log to file ---
     with open("conversion_log.txt", "a") as f:
