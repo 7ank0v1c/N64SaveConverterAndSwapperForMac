@@ -1,4 +1,4 @@
-# constants.py
+# core/constants.py
 EEP_EXT = ".eep"
 SRA_EXT = ".sra"
 FLA_EXT = ".fla"
