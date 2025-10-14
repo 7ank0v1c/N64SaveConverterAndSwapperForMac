@@ -1,7 +1,12 @@
-# n64_conversion_table.py
+# conversions/n64_conversion_table.py
 
-from core.constants import *
-from core.utils import *
+from core.constants.n64_constants import (
+    EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
+    SIZE_EEP, SIZE_SRA, SIZE_FLA, SIZE_MPK, SIZE_SRM,
+    SIZE_SRA_SRM_OFFSET, SIZE_FLA_SRM_OFFSET, SIZE_MPK_SRM_OFFSET,
+    EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL,
+    NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL
+)
 
 # N64 Conversion table
 conversion_table = {
