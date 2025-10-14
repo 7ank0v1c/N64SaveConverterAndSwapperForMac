@@ -3,41 +3,7 @@ from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
 # Constants
-EEP_EXT = ".eep"
-SRA_EXT = ".sra"
-FLA_EXT = ".fla"
-MPK_EXT = ".mpk"
-SRM_EXT = ".srm"
-
-SIZE_EEP = 2048
-SIZE_SRA = 32768
-SIZE_FLA = 131072
-SIZE_MPK = 131072
-SIZE_SRM = 296960
-
-SIZE_SRA_SRM_OFFSET = 133120  # SRA 32 KB will sit inside 296960-byte SRM
-SIZE_FLA_SRM_OFFSET = SIZE_SRM - SIZE_FLA
-SIZE_MPK_SRM_OFFSET = 2048
-
-# --- SETTINGS ---
-DRY_RUN = False  # Set True to skip writing output files (for testing)
-
-# Labels
-EEP_LABEL = "EEPROM (.eep)"
-SRA_LABEL = "SRAM (.sra)"
-FLA_LABEL = "FlashRAM (.fla)"
-MPK_LABEL = "Controller Pak (.mpk)"
-SRM_LABEL = "Retroarch Save (.srm)"
-
-NATIVE_LABEL = "Native / Cart Dump"
-PJ64_LABEL = "Project64/Mupen64"
-RA_LABEL = "Retroarch"
-WII_LABEL = "Wii/WiiU/Everdrive64"
-
-# File type lists
-file_types = [EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]
-source_list = [NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL]
-target_list = [NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL]
+from constants import *
 
 # Automatic file type detection
 def detect_file_type(filename):
