@@ -262,10 +262,14 @@ root.grid_columnconfigure(3, weight=1)
 log_label = Label(log_frame, text="Conversion Log:", bg="#111", fg="#fff")
 log_label.pack(anchor="w", padx=5, pady=(5,0))
 
-log_box = Text(log_frame, height=25, width=50, wrap="word", bg="#111", fg="#ddd")
-log_box.pack(side=LEFT, fill=BOTH, expand=True, padx=(5,0), pady=5)
+# Wrap Text in a fixed-height subframe
+log_text_frame = Frame(log_frame, height=200, bg="#111")  # fixed height in pixels
+log_text_frame.pack(fill=BOTH, expand=False, padx=5, pady=5)
 
-scrollbar = Scrollbar(log_frame, command=log_box.yview)
+log_box = Text(log_text_frame, height=25, width=50, wrap="word", bg="#111", fg="#ddd")
+log_box.pack(side=LEFT, fill=BOTH, expand=True)
+
+scrollbar = Scrollbar(log_text_frame, command=log_box.yview)
 scrollbar.pack(side=RIGHT, fill=Y)
 log_box.config(yscrollcommand=scrollbar.set)
 
