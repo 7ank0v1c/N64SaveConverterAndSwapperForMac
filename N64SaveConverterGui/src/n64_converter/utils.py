@@ -1,4 +1,6 @@
 # utils.py
+import os
+from .constants import *
 
 # Automatic file type detection
 def detect_file_type(filename):
