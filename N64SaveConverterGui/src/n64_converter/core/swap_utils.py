@@ -1,4 +1,4 @@
-# swap_utils.py
+# core/swap_utils.py
 
 def byteswap(data: bytes, swap_size: int) -> bytes:
     """Swap the byte order of data in chunks of the given size."""
