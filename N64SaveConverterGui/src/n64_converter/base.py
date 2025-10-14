@@ -2,7 +2,7 @@ import os
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
-# Constants
+# Import Constants (constants.py)
 from core.constants import *
 
 # Automatic file type detection
@@ -170,9 +170,11 @@ log_window = None
 
 # Load N64 logo and set as window/dock icon
 try:
-    logo_path = os.path.join(os.path.dirname(__file__), "n64_logo.png")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    resources_dir = os.path.join(base_dir, "resources")
+    logo_path = os.path.join(resources_dir, "n64_logo.png")
     logo_img = PhotoImage(file=logo_path)
-    root.iconphoto(True, logo_img)  # sets icon for window and taskbar/dock
+    root.iconphoto(True, logo_img)  # sets window and dock icon
 except Exception:
     logo_img = None
 
@@ -529,12 +531,6 @@ def convert_save():
     }
     out_ext = ext_map.get(tgt_type, extension)
     new_name = new_filename(os.path.basename(path), out_ext)
-
-    # --- DRY RUN ---
-    if DRY_RUN:
-        log(f"[DRY RUN] Would save file as: {new_name}", key)
-        messagebox.showinfo("Dry Run Complete", "No file written (dry run mode enabled).")
-        return
 
     # Save file
     out_path = filedialog.asksaveasfilename(
