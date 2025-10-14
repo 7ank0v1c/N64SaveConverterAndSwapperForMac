@@ -2,57 +2,27 @@ import os
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
-# Import Constants (constants.py)
-from core.constants import *
+# Import N64 Constants (core/n64_constants.py)
+from core.constants.n64_constants import (
+    EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
+    SIZE_EEP, SIZE_SRA, SIZE_FLA, SIZE_MPK, SIZE_SRM,
+    EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL,
+    NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL,
+    FILE_TYPES, SOURCE_LIST, TARGET_LIST
+)
 
-# Automatic file type detection
-from core.utils import *
+# Automatic file type detection + Read, Write, Resize Bytes (core/file_utils.py)
+from core.file_utils import detect_file_type, read_bytes, write_bytes, resize_bytes, new_filename
 
-# Conversion table now includes Native
-from conversions.n64_conversion_table import *
+# N64 Conversion table (conversions/n64_conversion_table.py)
+from conversions.n64_conversion_table import conversion_table
 
-# Read, Write, Resize Bytes
-from core.utils import *
+# Define Byteswap (core/swap_utils.py)
+from core.swap_utils import byteswap, determine_swap_size
 
-# Define Byteswap
-from core.swap_utils import *
+# Terminal Colours + Gui Log (core/log_utils.py)
+from core.log_utils import TermColors, gui_log
 
-# --- Terminal Colors ---
-class TermColors:
-    RESET = "\033[0m"
-    RED = "\033[31m"
-    GREEN = "\033[32m"
-    YELLOW = "\033[33m"
-    BLUE = "\033[34m"
-    MAGENTA = "\033[35m"
-    CYAN = "\033[36m"
-    WHITE = "\033[37m"
-
-def determine_swap_size(swap_required_from_table=False, user_choice="Default"):
-    """
-    Decide which swap size to use:
-    - By default, use the conversion table recommendation.
-    - If user chooses 2 or 4 bytes, override table.
-    """
-    if user_choice == "2 bytes":
-        return 2
-    elif user_choice == "4 bytes":
-        return 4
-    else:  # Default
-        return 2 if swap_required_from_table else 1
-
-from datetime import datetime
-import os
-
-def new_filename(filename, extension):
-    """
-    Prepends 'Converted_' and a timestamp to the original filename,
-    then appends the correct extension.
-    Example: MySave.sra → Converted_20251014-153245_MySave.sra
-    """
-    base, _ = os.path.splitext(filename)
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    return f"{timestamp}_{base}{extension}"
 
 # GUI setup
 root = Tk()
