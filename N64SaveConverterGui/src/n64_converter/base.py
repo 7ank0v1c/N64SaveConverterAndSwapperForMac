@@ -33,6 +33,8 @@ from core.theme_utils import *
 # Gui Callbacks (gui/callbacks.py)
 from gui import callbacks
 
+from systems.n64.gui import n64_callbacks
+
 # GUI setup
 root = Tk()
 root.title("N64 Save File Converter")
