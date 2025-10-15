@@ -19,9 +19,8 @@ def gui_log(log_box, message, level="info"):
         "info": "level_info",
         "conversion": "level_conversion",
         "warn": "level_warn",
-        "error": "level_error"
+        "error": "level_error",
+        "success": "level_success"  # add success tag
     }
-    timestamp = datetime.now().strftime("[%H:%M:%S] ")
-    log_box.insert("end", timestamp, "timestamp")
     log_box.insert("end", message + "\n", tags.get(level, "level_info"))
     log_box.see("end")  # auto-scroll
