@@ -13,14 +13,14 @@ def setup_logging():
 def log(message, log_box=None, key=None, level="INFO"):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # --- Determine terminal colour ---
+    # --- Terminal colors ---
     term_color_map = {
         "INFO": TermColors.WHITE,
         "WARN": TermColors.YELLOW,
         "ERROR": TermColors.RED,
     }
-    conversion_color = TermColors.CYAN
-    timestamp_color = TermColors.YELLOW
+    conversion_color = TermColors.ORANGE
+    timestamp_color = TermColors.ORANGE
     reset = TermColors.RESET
 
     # --- Terminal output ---
@@ -29,23 +29,21 @@ def log(message, log_box=None, key=None, level="INFO"):
     else:
         print(f"{timestamp_color}[{timestamp}]{reset} {term_color_map.get(level, TermColors.WHITE)}{message}{reset}")
 
-    # --- GUI log (if provided) ---
+    # --- GUI log ---
     if log_box:
-        tag = "level_info"
-        if level == "WARN":
-            tag = "level_warn"
-        elif level == "ERROR":
-            tag = "level_error"
-        elif "Using conversion table entry" in message:
-            tag = "level_conversion"
+        if "Using conversion table entry" in message:
+            tag = "level_conversion"  # orange
+        else:
+            tag = {
+                "INFO": "level_info",
+                "WARN": "level_warn",
+                "ERROR": "level_error"
+            }.get(level, "level_info")
 
         timestamp_display = f"[{timestamp}]"
-        if key and "Using conversion table entry" not in message:
-            gui_message = f"{timestamp_display} [{key}] {message}"
-        else:
-            gui_message = f"{timestamp_display} {message}"
+        gui_message = f"{timestamp_display}" + (f" [{key}]" if key else "") + f" {message}"
 
-        gui_log(log_box, gui_message, level=tag.replace("level_", ""))
+        gui_log(log_box, gui_message, level=tag)
 
     # --- Log to file ---
     with open("conversion_log.txt", "a") as f:
