@@ -1,7 +1,5 @@
 # systems/n64/n64_utils.py
 
-# systems/n64/n64_utils.py
-
 from systems.n64.n64_constants import (
     EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL,
     NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL
@@ -33,3 +31,11 @@ def determine_valid_target_types(src, src_type, tgt):
             valid_output_types.add(SRM_LABEL)
 
     return sorted(valid_output_types)
+
+SWAPPABLE_TYPES = [SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]
+
+def is_byteswap_allowed(src_type):
+    """
+    Returns True if a byte-swap can be applied for this source type.
+    """
+    return src_type in SWAPPABLE_TYPES
