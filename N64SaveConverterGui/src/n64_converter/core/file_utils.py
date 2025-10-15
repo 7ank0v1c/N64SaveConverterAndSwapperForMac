@@ -2,7 +2,7 @@
 import os
 from datetime import datetime
 from tkinter import messagebox
-from .constants.n64_constants import (
+from systems.n64.n64_constants import (
     EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
     SIZE_EEP, SIZE_SRA, SIZE_FLA, SIZE_MPK, SIZE_SRM,
     EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL,
