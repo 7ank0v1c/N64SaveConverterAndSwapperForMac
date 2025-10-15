@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
 # Import N64 Constants (core/n64_constants.py)
-from system.n64.n64_constants import (
+from systems.n64.n64_constants import (
     EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
     SIZE_EEP, SIZE_SRA, SIZE_FLA, SIZE_MPK, SIZE_SRM,
     SIZE_SRA_SRM_OFFSET, SIZE_FLA_SRM_OFFSET, SIZE_MPK_SRM_OFFSET,
