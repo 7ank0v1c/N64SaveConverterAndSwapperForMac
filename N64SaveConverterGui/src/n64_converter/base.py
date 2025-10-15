@@ -16,7 +16,7 @@ from systems.n64.n64_constants import (
 from core.file_utils import detect_file_type, read_bytes, write_bytes, resize_bytes, new_filename
 
 # N64 Conversion table (conversions/n64_conversion_table.py)
-from system.n64.n64_conversion_table import conversion_table
+from systems.n64.n64_conversion_table import conversion_table
 
 # Define Byteswap (core/swap_utils.py)
 from core.swap_utils import byteswap, determine_swap_size
