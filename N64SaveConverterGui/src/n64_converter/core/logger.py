@@ -42,9 +42,7 @@ def log(message, log_box=None, key=None, level="INFO"):
                 "SUCCESS": "level_success",  # new GUI tag
             }.get(level, "level_info")
 
-        timestamp_display = f"[{timestamp}]"
-        gui_message = f"{timestamp_display}" + (f" [{key}]" if key else "") + f" {message}"
-
+        gui_message = f"[{timestamp}] {message}"
         gui_log(log_box, gui_message, level=tag)
 
     # --- Log to file ---
