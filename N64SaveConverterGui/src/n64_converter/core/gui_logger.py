@@ -6,8 +6,9 @@ from core.log_utils import gui_log
 PASTEL_GUI_COLORS = {
     "info": "#a8c7fa",     # soft blue
     "success": "#9ae8a4",  # soft green
-    "warning": "#ffd580",  # pastel orange
-    "error": "#ff9b9b",    # light red
+    "warn": "#ffd580",      # pastel orange
+    "error": "#ff9b9b",     # light red
+    "conversion": "#7FFFD4" # aqua
 }
 
 # Keep a reference to the active Text widget
@@ -17,6 +18,10 @@ def set_log_widget(widget):
     """Assign the GUI log Text widget so all logging functions can write to it."""
     global log_widget
     log_widget = widget
+
+    # Configure pastel color tags on the widget
+    for tag, color in PASTEL_GUI_COLORS.items():
+        log_widget.tag_config(tag, foreground=color, background="#111")
 
 
 def info(msg):
