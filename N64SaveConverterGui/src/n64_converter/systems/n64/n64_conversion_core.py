@@ -6,7 +6,7 @@ from core.file_utils import read_bytes, write_bytes, resize_bytes, new_filename
 from core.swap_utils import byteswap, determine_swap_size
 from core.logger import log
 from .n64_conversion_table import conversion_table
-from core.constants.n64_constants import *
+from system.n64.n64_constants import *
 
 def convert_save(path, src, src_type, tgt, tgt_type, byteswap_option, trim_pad_option, log_box=None):
     """
