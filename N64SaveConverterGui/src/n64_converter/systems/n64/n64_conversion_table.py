@@ -1,4 +1,4 @@
-# conversions/n64_conversion_table.py
+# systems/n64/n64_conversion_table.py
 
 from core.constants.n64_constants import (
     EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
