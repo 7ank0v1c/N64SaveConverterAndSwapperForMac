@@ -2,6 +2,14 @@
 
 from core.log_utils import gui_log
 
+# Pastel colors used for GUI log message tags
+PASTEL_GUI_COLORS = {
+    "info": "#a8c7fa",     # soft blue
+    "success": "#9ae8a4",  # soft green
+    "warning": "#ffd580",  # pastel orange
+    "error": "#ff9b9b",    # light red
+}
+
 # Keep a reference to the active Text widget
 log_widget = None
 
