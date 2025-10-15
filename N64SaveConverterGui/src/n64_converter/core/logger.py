@@ -18,8 +18,9 @@ def log(message, log_box=None, key=None, level="INFO"):
         "INFO": TermColors.WHITE,
         "WARN": TermColors.YELLOW,
         "ERROR": TermColors.RED,
+        "SUCCESS": TermColors.GREEN,  # new success color
     }
-    conversion_color = TermColors.ORANGE
+    conversion_color = TermColors.BLUE
     timestamp_color = TermColors.ORANGE
     reset = TermColors.RESET
 
@@ -37,7 +38,8 @@ def log(message, log_box=None, key=None, level="INFO"):
             tag = {
                 "INFO": "level_info",
                 "WARN": "level_warn",
-                "ERROR": "level_error"
+                "ERROR": "level_error",
+                "SUCCESS": "level_success",  # new GUI tag
             }.get(level, "level_info")
 
         timestamp_display = f"[{timestamp}]"
