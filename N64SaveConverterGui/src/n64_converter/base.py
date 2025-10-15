@@ -68,17 +68,6 @@ trim_pad_var = BooleanVar()
 byteswap_var = StringVar(value="None")
 
 # GUI Components
-def browse_file():
-    path = filedialog.askopenfilename(filetypes=[("N64 Saves", "*.eep *.sra *.fla *.mpk *.srm")])
-    if path:
-        input_path.set(path)
-        # Detect type
-        selected_type = detect_file_type(path)
-        if selected_type in FILE_TYPES:  # ensure it’s valid
-            source_type_var.set(selected_type)
-        else:
-            source_type_var.set("")  # fallback if detection fails
-
 Label(root, text="Select N64 Save File:").grid(row=0, column=0, sticky=W, padx=10, pady=5)
 directory_entry = Entry(root, textvariable=input_path, width=45)
 directory_entry.grid(row=0, column=1, padx=10, pady=5)
@@ -91,8 +80,12 @@ input_path.trace_add("write", scroll_to_end)
 directory_entry.bind("<KeyRelease>", lambda e: directory_entry.xview_moveto(1))
 directory_entry.bind("<<Paste>>", lambda e: root.after_idle(lambda: directory_entry.xview_moveto(1)))
 
-# Browse Button
-Button(root, text="Browse", command=browse_file).grid(row=0, column=2, padx=10, pady=5)
+#Browse button, calls the generic helper:
+Button(root, text="Browse", command=lambda: callbacks.browse_file(
+    filetypes=[("N64 Saves", "*.eep *.sra *.fla *.mpk *.srm")],
+    path_var=input_path,
+    type_var=source_type_var
+)).grid(row=0, column=2, padx=10, pady=5)
 
 # --- INLINE LOG FRAME (right side, scrollable) ---
 log_frame = Frame(root, bg="#111")
@@ -238,148 +231,17 @@ log_box.tag_config("level_conversion", foreground="#00FFFF") # cyan
 log_box.tag_config("level_warn", foreground="#FFD700") # yellow
 log_box.tag_config("level_error", foreground="#FF4500") # red
 
-# Update secondary GUI log if open
-if log_window and log_window.winfo_exists():
-    log_window.log_text.config(state="normal")
-    log_window.log_text.insert(END, f"[{timestamp}]" + (f" [{key}]" if key else "") + f" {message}\n")
-    log_window.log_text.see(END)
-    log_window.log_text.config(state="disabled")
-
-# Convert Function
-def convert_save():
-    path = input_path.get()
-    if not path or not os.path.exists(path):
-        messagebox.showerror("Error", "Please select a valid input file.")
-        return
-
-    # Get source/target info
-    src = source_var.get()
-    src_type = source_type_var.get()
-    tgt = target_var.get()
-    tgt_type = target_type_var.get()
-
-    # --- DEFINE KEY FIRST ---
-    key = f"{src}-{src_type}-{tgt}-{tgt_type}"
-
-    # Now safe to log using key
-    log(f"Starting conversion for: {path}", log_box, key, level="INFO")
-
-    data = read_bytes(path)
-    if not data:
-        log("Error: Unable to read data from file.", log_box, key, level="ERROR")
-        return
-
-    log(f"Source: {src} ({src_type}) → Target: {tgt} ({tgt_type})", log_box, key, level="INFO")
-
-    # --- Continue with conversion logic ---
-    tgt_size = len(data)
-    offset = 0
-    swap_required = False
-    extension = os.path.splitext(path)[1]
-
-    conv = conversion_table.get(key)
-    if conv:
-        src_size, tgt_size, offset, swap_required, extension = conv
-        log(f"Using conversion table entry: {key}", log_box, key, level="INFO")
-    else:
-        log("No matching conversion found; defaulting to raw copy.", log_box, key, level="WARN")
-
-    # Handle Native target separately
-    if tgt == NATIVE_LABEL:
-        tgt_size = len(data)
-        offset = 0
-        swap_required = False
-        extension = os.path.splitext(path)[1]
-        log("Target is Native — using direct copy settings.", log_box, key, level="INFO")
-
-    # Additional offsets for certain SRM conversions
-    if src_type == SRA_LABEL and tgt_type == SRM_LABEL:
-        tgt_size = SIZE_SRM
-        offset = SIZE_SRA_SRM_OFFSET
-        swap_required = True
-        extension = SRM_EXT
-    elif src_type == FLA_LABEL and tgt_type == SRM_LABEL:
-        tgt_size = SIZE_SRM
-        offset = SIZE_FLA_SRM_OFFSET
-        swap_required = True
-        extension = SRM_EXT
-    elif src_type == MPK_LABEL and tgt_type == SRM_LABEL:
-        tgt_size = SIZE_SRM
-        offset = SIZE_MPK_SRM_OFFSET
-        swap_required = False
-        extension = SRM_EXT
-    elif src_type == SRM_LABEL:
-        if tgt_type == SRA_LABEL:
-            tgt_size = SIZE_SRA
-            offset = -SIZE_SRA_SRM_OFFSET
-            swap_required = True
-            extension = SRA_EXT
-        elif tgt_type == FLA_LABEL:
-            tgt_size = SIZE_FLA
-            offset = -SIZE_FLA_SRM_OFFSET
-            swap_required = True
-            extension = FLA_EXT
-        elif tgt_type == MPK_LABEL:
-            tgt_size = SIZE_MPK
-            offset = -SIZE_MPK_SRM_OFFSET
-            swap_required = False
-            extension = MPK_EXT
-        elif tgt_type == EEP_LABEL:
-            tgt_size = SIZE_EEP
-            offset = 0
-            swap_required = False
-            extension = EEP_EXT
-    elif src_type == EEP_LABEL and tgt_type == SRM_LABEL:
-        tgt_size = SIZE_SRM
-        offset = 0
-        swap_required = False
-        extension = SRM_EXT
-
-    # Now safe to log
-    log(f"Resizing data to {tgt_size} bytes (offset {offset})", log_box, key)
-    data = resize_bytes(data, tgt_size, offset)
-    
-    # Determine swap size based on conversion table first, then force option
-    swap_size = determine_swap_size(
-        swap_required_from_table=swap_required,
-        user_choice=byteswap_var.get()
-    )
-    
-    if swap_size > 1:
-        log(f"Applying {swap_size}-byte swap...", log_box, key)
-        data = byteswap(data, swap_size)
-    else:
-        log("No byte swap applied.", log_box, key)
-    
-    # Determine output extension
-    ext_map = {
-        EEP_LABEL: EEP_EXT,
-        SRA_LABEL: SRA_EXT,
-        FLA_LABEL: FLA_EXT,
-        MPK_LABEL: MPK_EXT,
-        SRM_LABEL: SRM_EXT
-    }
-    out_ext = ext_map.get(tgt_type, extension)
-    new_name = new_filename(os.path.basename(path), out_ext)
-    
-    # Save file
-    out_path = filedialog.asksaveasfilename(
-        initialfile=new_name,
-        defaultextension=out_ext,
-        filetypes=[("N64 Save Files", f"*{out_ext}")]
-    )
-    if not out_path:
-        log("Save operation cancelled by user.", log_box, key)
-        return
-    
-    if write_bytes(data, out_path):
-        log(f"File written successfully → {out_path}", log_box, key)
-        messagebox.showinfo("Success", f"File converted and saved as:\n{out_path}")
-    else:
-        log("Error writing file.", log_box, key)
-
 # Convert button
-Button(root, text="Convert", width=20, command=convert_save).grid(row=7, column=1, pady=15)
+Button(root, text="Convert", width=20, command=lambda: n64_callbacks.convert_save_n64(
+    input_path=input_path,
+    source_var=source_var,
+    source_type_var=source_type_var,
+    target_var=target_var,
+    target_type_var=target_type_var,
+    byteswap_var=byteswap_var,
+    trim_pad_var=trim_pad_var,
+    log_box=log_box
+)).grid(row=7, column=1, pady=15)
 
 update_byteswap_menu()
 update_target_type_menu()
