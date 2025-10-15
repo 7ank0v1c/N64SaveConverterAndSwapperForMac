@@ -4,10 +4,10 @@ from logger import setup_logging
 from gui import launch_gui
 
 def main():
-    # --- Initialize logging ---
+    # Initialize logging
     setup_logging()
 
-    # --- Launch GUI ---
+    # Launch GUI
     launch_gui()
 
 if __name__ == "__main__":
