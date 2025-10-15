@@ -35,6 +35,8 @@ from gui import callbacks
 
 from systems.n64.gui import n64_callbacks
 
+import threading
+
 # GUI setup
 root = Tk()
 root.title("N64 Save File Converter")
@@ -104,20 +106,24 @@ log_label.pack(anchor="w", padx=5, pady=(5,0))
 log_text_frame = Frame(log_frame, height=200, bg="#111")  # fixed height in pixels
 log_text_frame.pack(fill=BOTH, expand=False, padx=5, pady=5)
 
-log_box = Text(log_text_frame, height=25, width=50, wrap="word", bg="#111", fg="#ddd")
+log_box = Text(
+    log_text_frame,
+    height=25,
+    width=50,
+    wrap="word",
+    bg="#111",             # dark background
+    fg="#ddd",             # default text color
+    insertbackground="#fff" # caret color
+)
 log_box.pack(side=LEFT, fill=BOTH, expand=True)
 
 scrollbar = Scrollbar(log_text_frame, command=log_box.yview)
 scrollbar.pack(side=RIGHT, fill=Y)
 log_box.config(yscrollcommand=scrollbar.set)
 
-# GUI tags
-log_box.tag_config("timestamp", foreground="#FFA500")  # orange
-log_box.tag_config("level_info", foreground="#FFFFFF") # white
-log_box.tag_config("level_conversion", foreground="#00FFFF") # cyan
-log_box.tag_config("level_warn", foreground="#FFD700") # yellow
-log_box.tag_config("level_error", foreground="#FF4500") # red
-log_box.tag_config("level_success", foreground="#00FF00")  # bright green
+# Configure pastel colour tags for log messages
+for tag, color in PASTEL_GUI_COLORS.items():
+    log_box.tag_config(tag, foreground=color, background="#111")
 
 # --- Toggle Function ---
 log_visible = True  # log open by default
@@ -230,27 +236,45 @@ def update_byteswap_menu(*args):
 source_type_var.trace_add("write", update_byteswap_menu)
 target_type_var.trace_add("write", update_byteswap_menu)
 
-# GUI tags
-log_box.tag_config("timestamp", foreground="#FFA500")  # orange
-log_box.tag_config("level_info", foreground="#FFFFFF") # white
-log_box.tag_config("level_conversion", foreground="#00FFFF") # cyan
-log_box.tag_config("level_warn", foreground="#FFD700") # yellow
-log_box.tag_config("level_error", foreground="#FF4500") # red
+import threading  # add at top of file with other imports
 
-# Convert button
-Button(root, text="Convert", width=20, command=lambda: n64_callbacks.convert_save_n64(
-    input_path=input_path,
-    source_var=source_var,
-    source_type_var=source_type_var,
-    target_var=target_var,
-    target_type_var=target_type_var,
-    byteswap_var=byteswap_var,
-    trim_pad_var=trim_pad_var,
-    log_box=log_box
-)).grid(row=7, column=1, pady=15)
+def start_conversion():
+    threading.Thread(
+        target=n64_callbacks.convert_save_n64,
+        kwargs={
+            "input_path": input_path,
+            "source_var": source_var,
+            "source_type_var": source_type_var,
+            "target_var": target_var,
+            "target_type_var": target_type_var,
+            "byteswap_var": byteswap_var,
+            "trim_pad_var": trim_pad_var,
+            "log_box": log_box
+        },
+        daemon=True  # ensures thread closes with GUI
+    ).start()
+
+# Update Convert button to use the threaded function
+Button(root, text="Convert", width=20, command=start_conversion).grid(row=7, column=1, pady=15)
 
 update_byteswap_menu()
 update_target_type_menu()
+
+def start_conversion():
+    threading.Thread(
+        target=n64_callbacks.convert_save_n64,
+        kwargs={
+            "input_path": input_path,
+            "source_var": source_var,
+            "source_type_var": source_type_var,
+            "target_var": target_var,
+            "target_type_var": target_type_var,
+            "byteswap_var": byteswap_var,
+            "trim_pad_var": trim_pad_var,
+            "log_box": log_box
+        },
+        daemon=True  # ensures thread closes with GUI
+    ).start()
 
 # Apply theme and start polling for system dark/light changes
 apply_theme(root)       # automatically detects widgets
