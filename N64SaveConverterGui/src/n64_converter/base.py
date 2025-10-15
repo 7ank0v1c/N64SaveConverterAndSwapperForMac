@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 
 # Import N64 Constants (core/n64_constants.py)
-from core.constants.n64_constants import (
+from system.n64.n64_constants import (
     EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
     SIZE_EEP, SIZE_SRA, SIZE_FLA, SIZE_MPK, SIZE_SRM,
     SIZE_SRA_SRM_OFFSET, SIZE_FLA_SRM_OFFSET, SIZE_MPK_SRM_OFFSET,
@@ -16,7 +16,7 @@ from core.constants.n64_constants import (
 from core.file_utils import detect_file_type, read_bytes, write_bytes, resize_bytes, new_filename
 
 # N64 Conversion table (conversions/n64_conversion_table.py)
-from conversions.n64_conversion_table import conversion_table
+from system.n64.n64_conversion_table import conversion_table
 
 # Define Byteswap (core/swap_utils.py)
 from core.swap_utils import byteswap, determine_swap_size
