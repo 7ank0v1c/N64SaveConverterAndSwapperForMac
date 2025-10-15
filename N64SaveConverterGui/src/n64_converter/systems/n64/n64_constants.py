@@ -22,17 +22,17 @@ SIZE_FLA_SRM_OFFSET: int = SIZE_SRM - SIZE_FLA
 SIZE_MPK_SRM_OFFSET: int = 2048
 
 # File Type Labels
-EEP_LABEL: str = "EEPROM (.eep)"
-SRA_LABEL: str = "SRAM (.sra)"
-FLA_LABEL: str = "FlashRAM (.fla)"
-MPK_LABEL: str = "Controller Pak (.mpk)"
-SRM_LABEL: str = "Retroarch Save (.srm)"
+EEP_LABEL: str = " EEPROM (.eep) "
+SRA_LABEL: str = " SRAM (.sra) "
+FLA_LABEL: str = " FlashRAM (.fla) "
+MPK_LABEL: str = " Controller Pak (.mpk) "
+SRM_LABEL: str = " Retroarch Save (.srm) "
 
 # Source / Target System Labels
-NATIVE_LABEL: str = "Native / Cart Dump"
-PJ64_LABEL: str = "Project64/Mupen64"
-RA_LABEL: str = "Retroarch"
-WII_LABEL: str = "Wii/WiiU/Everdrive64"
+NATIVE_LABEL: str = " Native / Cart Dump "
+PJ64_LABEL: str = " Project64/Mupen64 "
+RA_LABEL: str = " Retroarch "
+WII_LABEL: str = " Wii/WiiU/Everdrive64 "
 
 # Lists for UI dropdowns
 FILE_TYPES: List[str] = [EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL]
