@@ -117,6 +117,7 @@ log_box.tag_config("level_info", foreground="#FFFFFF") # white
 log_box.tag_config("level_conversion", foreground="#00FFFF") # cyan
 log_box.tag_config("level_warn", foreground="#FFD700") # yellow
 log_box.tag_config("level_error", foreground="#FF4500") # red
+log_box.tag_config("level_success", foreground="#00FF00")  # bright green
 
 # --- Toggle Function ---
 log_visible = True  # log open by default
