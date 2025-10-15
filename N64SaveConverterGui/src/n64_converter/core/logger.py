@@ -46,5 +46,5 @@ def log(message, log_box=None, key=None, level="INFO"):
         gui_log(log_box, gui_message, level=tag)
 
     # --- Log to file ---
-    with open("conversion_log.txt", "a") as f:
-        f.write(f"[{timestamp}]" + (f" [{key}]" if key else "") + f" {message}\n")
+    with open("conversion_log.txt", "a", encoding="utf-8") as f:
+        f.write(f"[{timestamp}] [{level}] {message}\n")
