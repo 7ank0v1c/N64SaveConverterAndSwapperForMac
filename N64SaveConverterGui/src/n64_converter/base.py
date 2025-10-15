@@ -6,6 +6,7 @@ from tkinter import ttk, filedialog, messagebox
 from core.constants.n64_constants import (
     EEP_EXT, SRA_EXT, FLA_EXT, MPK_EXT, SRM_EXT,
     SIZE_EEP, SIZE_SRA, SIZE_FLA, SIZE_MPK, SIZE_SRM,
+    SIZE_SRA_SRM_OFFSET, SIZE_FLA_SRM_OFFSET, SIZE_MPK_SRM_OFFSET,
     EEP_LABEL, SRA_LABEL, FLA_LABEL, MPK_LABEL, SRM_LABEL,
     NATIVE_LABEL, PJ64_LABEL, RA_LABEL, WII_LABEL,
     FILE_TYPES, SOURCE_LIST, TARGET_LIST
@@ -19,6 +20,9 @@ from conversions.n64_conversion_table import conversion_table
 
 # Define Byteswap (core/swap_utils.py)
 from core.swap_utils import byteswap, determine_swap_size
+
+# Load logger module (core/logger.py)
+from core.logger import log
 
 # Terminal Colours + Gui Log (core/log_utils.py)
 from core.log_utils import TermColors, gui_log
@@ -70,7 +74,7 @@ def browse_file():
         input_path.set(path)
         # Detect type
         selected_type = detect_file_type(path)
-        if selected_type in file_types:  # ensure it’s valid
+        if selected_type in FILE_TYPES:  # ensure it’s valid
             source_type_var.set(selected_type)
         else:
             source_type_var.set("")  # fallback if detection fails
@@ -332,21 +336,21 @@ def convert_save():
         extension = SRM_EXT
 
     # Now safe to log
-    log(f"Resizing data to {tgt_size} bytes (offset {offset})", key)
+    log(f"Resizing data to {tgt_size} bytes (offset {offset})", log_box, key)
     data = resize_bytes(data, tgt_size, offset)
-
+    
     # Determine swap size based on conversion table first, then force option
     swap_size = determine_swap_size(
         swap_required_from_table=swap_required,
         user_choice=byteswap_var.get()
     )
-
+    
     if swap_size > 1:
-        log(f"Applying {swap_size}-byte swap...", key)
+        log(f"Applying {swap_size}-byte swap...", log_box, key)
         data = byteswap(data, swap_size)
     else:
-        log("No byte swap applied.", key)
-
+        log("No byte swap applied.", log_box, key)
+    
     # Determine output extension
     ext_map = {
         EEP_LABEL: EEP_EXT,
@@ -357,7 +361,7 @@ def convert_save():
     }
     out_ext = ext_map.get(tgt_type, extension)
     new_name = new_filename(os.path.basename(path), out_ext)
-
+    
     # Save file
     out_path = filedialog.asksaveasfilename(
         initialfile=new_name,
@@ -365,14 +369,14 @@ def convert_save():
         filetypes=[("N64 Save Files", f"*{out_ext}")]
     )
     if not out_path:
-        log("Save operation cancelled by user.", key)
+        log("Save operation cancelled by user.", log_box, key)
         return
-
+    
     if write_bytes(data, out_path):
-        log(f"File written successfully → {out_path}", key)
+        log(f"File written successfully → {out_path}", log_box, key)
         messagebox.showinfo("Success", f"File converted and saved as:\n{out_path}")
     else:
-        log("Error writing file.", key)
+        log("Error writing file.", log_box, key)
 
 # Convert button
 Button(root, text="Convert", width=20, command=convert_save).grid(row=7, column=1, pady=15)
