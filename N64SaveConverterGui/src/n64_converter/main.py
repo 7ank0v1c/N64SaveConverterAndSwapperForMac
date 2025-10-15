@@ -1,6 +1,6 @@
 # main.py
 import sys
-from logger import setup_logging
+from core.logger import setup_logging, log
 from gui import launch_gui
 
 def main():
