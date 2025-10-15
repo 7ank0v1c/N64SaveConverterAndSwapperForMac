@@ -140,12 +140,12 @@ source_type_label = Label(root, textvariable=source_type_var, relief="flat", wid
 source_type_label.grid(row=1, column=1, padx=10, pady=5)
 
 Label(root, text="Save File Source:").grid(row=2, column=0, sticky=W, padx=10, pady=5)
-source_menu = ttk.Combobox(root, textvariable=source_var, values=source_list, state="readonly")
+source_menu = ttk.Combobox(root, textvariable=source_var, values=SOURCE_LIST, state="readonly")
 source_menu.grid(row=2, column=1, padx=10, pady=5)
 
 # Target
 Label(root, text="Save File Target:").grid(row=3, column=0, sticky=W, padx=10, pady=5)
-target_menu = ttk.Combobox(root, textvariable=target_var, values=target_list, state="readonly")
+target_menu = ttk.Combobox(root, textvariable=target_var, values=TARGET_LIST, state="readonly")
 target_menu.grid(row=3, column=1, padx=10, pady=5)
 
 Label(root, text="Save File Target Type:").grid(row=4, column=0, sticky=W, padx=10, pady=5)
