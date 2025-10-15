@@ -30,6 +30,9 @@ from core.log_utils import TermColors, gui_log
 # Theme Utilities (core/theme_utils.py)
 from core.theme_utils import *
 
+# Gui Callbacks (gui/callbacks.py)
+from gui import callbacks
+
 # GUI setup
 root = Tk()
 root.title("N64 Save File Converter")
