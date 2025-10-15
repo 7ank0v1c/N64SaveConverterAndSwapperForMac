@@ -227,48 +227,6 @@ def update_byteswap_menu(*args):
 source_type_var.trace_add("write", update_byteswap_menu)
 target_type_var.trace_add("write", update_byteswap_menu)
 
-# --- Updated Log Function ---
-from datetime import datetime
-def log(message, key=None, level="INFO"):
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    # --- Determine terminal color ---
-    term_color_map = {
-        "INFO": "\033[37m",   # white
-        "WARN": "\033[33m",   # yellow
-        "ERROR": "\033[31m",  # red
-    }
-    conversion_color = "\033[36m"  # cyan
-    timestamp_color = "\033[38;5;214m"  # orange
-    reset = "\033[0m"
-
-    # --- Terminal output ---
-    if "Using conversion table entry" in message:
-        print(f"{timestamp_color}[{timestamp}]{reset} {conversion_color}{message}{reset}")
-    else:
-        print(f"{timestamp_color}[{timestamp}]{reset} {term_color_map.get(level, '\033[37m')}{message}{reset}")
-
-    # --- GUI log ---
-    tag = "level_info"
-    if level == "WARN":
-        tag = "level_warn"
-    elif level == "ERROR":
-        tag = "level_error"
-    elif "Using conversion table entry" in message:
-        tag = "level_conversion"
-
-    # --- Main log box ---
-    log_box.insert(END, f"[{timestamp}]", "timestamp")
-    if key and "Using conversion table entry" not in message:
-        log_box.insert(END, f" [{key}]")
-    log_box.insert(END, f" {message}\n", tag)
-    log_box.see(END)
-    log_box.update_idletasks()  # <-- Force real-time update
-
-    # --- Log to file ---
-    with open("conversion_log.txt", "a") as f:
-        f.write(f"[{timestamp}]" + (f" [{key}]" if key and "Using conversion table entry" not in message else "") + f" {message}\n")
-
 # GUI tags
 log_box.tag_config("timestamp", foreground="#FFA500")  # orange
 log_box.tag_config("level_info", foreground="#FFFFFF") # white
@@ -300,14 +258,14 @@ def convert_save():
     key = f"{src}-{src_type}-{tgt}-{tgt_type}"
 
     # Now safe to log using key
-    log(f"Starting conversion for: {path}", key, level="INFO")
+    log(f"Starting conversion for: {path}", log_box, key, level="INFO")
 
     data = read_bytes(path)
     if not data:
-        log("Error: Unable to read data from file.", key, level="ERROR")
+        log("Error: Unable to read data from file.", log_box, key, level="ERROR")
         return
 
-    log(f"Source: {src} ({src_type}) → Target: {tgt} ({tgt_type})", key, level="INFO")
+    log(f"Source: {src} ({src_type}) → Target: {tgt} ({tgt_type})", log_box, key, level="INFO")
 
     # --- Continue with conversion logic ---
     tgt_size = len(data)
@@ -318,9 +276,9 @@ def convert_save():
     conv = conversion_table.get(key)
     if conv:
         src_size, tgt_size, offset, swap_required, extension = conv
-        log(f"Using conversion table entry: {key}", key, level="INFO")
+        log(f"Using conversion table entry: {key}", log_box, key, level="INFO")
     else:
-        log("No matching conversion found; defaulting to raw copy.", key, level="WARN")
+        log("No matching conversion found; defaulting to raw copy.", log_box, key, level="WARN")
 
     # Handle Native target separately
     if tgt == NATIVE_LABEL:
@@ -328,7 +286,7 @@ def convert_save():
         offset = 0
         swap_required = False
         extension = os.path.splitext(path)[1]
-        log("Target is Native — using direct copy settings.", key, level="INFO")
+        log("Target is Native — using direct copy settings.", log_box, key, level="INFO")
 
     # Additional offsets for certain SRM conversions
     if src_type == SRA_LABEL and tgt_type == SRM_LABEL:
