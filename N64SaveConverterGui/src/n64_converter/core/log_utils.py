@@ -11,6 +11,7 @@ class TermColors:
     MAGENTA = "\033[35m"
     CYAN = "\033[36m"
     WHITE = "\033[37m"
+    ORANGE = "\033[38;5;208m"
 
 # GUI logging
 def gui_log(log_box, message, level="info"):
