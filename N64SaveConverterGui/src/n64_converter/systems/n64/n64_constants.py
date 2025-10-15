@@ -1,4 +1,4 @@
-# system/n64/n64_constants.py
+# systems/n64/n64_constants.py
 
 from typing import List
 
