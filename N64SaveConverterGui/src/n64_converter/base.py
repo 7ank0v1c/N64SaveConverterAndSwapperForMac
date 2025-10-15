@@ -23,6 +23,8 @@ from core.swap_utils import byteswap, determine_swap_size
 # Terminal Colours + Gui Log (core/log_utils.py)
 from core.log_utils import TermColors, gui_log
 
+# Theme Utilities (core/theme_utils.py)
+from core.theme_utils import *
 
 # GUI setup
 root = Tk()
@@ -420,97 +422,8 @@ Button(root, text="Convert", width=20, command=convert_save).grid(row=7, column=
 update_byteswap_menu()
 update_target_type_menu()
 
-import platform
-import subprocess
-
-# --- SYSTEM DARK/LIGHT MODE DETECTION (macOS) ---
-def is_dark_mode():
-    """
-    Returns True if macOS is in Dark Mode.
-    On other systems, defaults to False.
-    """
-    if platform.system() == "Darwin":
-        try:
-            result = subprocess.run(
-                ["defaults", "read", "-g", "AppleInterfaceStyle"],
-                capture_output=True, text=True
-            )
-            return result.stdout.strip() == "Dark"
-        except Exception:
-            return False
-    return False
-
-# --- APPLY THEME COLORS ---
-def apply_theme(root, widgets):
-    """
-    widgets: dict with keys 'root', 'labels', 'log_frame', 'log_box', etc.
-    """
-    dark = is_dark_mode()
-    if dark:
-        colors = {
-            "bg": "#111",
-            "fg": "#ddd",
-            "label_bg": "#111",
-            "label_fg": "#fff",
-            "log_tag_info": "#FFFFFF",
-            "log_tag_conversion": "#00FFFF",
-            "log_tag_warn": "#FFD700",
-            "log_tag_error": "#FF4500",
-            "log_tag_timestamp": "#FFA500"
-        }
-    else:
-        colors = {
-            "bg": "#fff",
-            "fg": "#000",
-            "label_bg": "#fff",
-            "label_fg": "#000",
-            "log_tag_info": "#000000",
-            "log_tag_conversion": "#008B8B",  # dark cyan
-            "log_tag_warn": "#B8860B",       # dark goldenrod
-            "log_tag_error": "#B22222",      # firebrick
-            "log_tag_timestamp": "#FF8C00"   # dark orange
-        }
-
-    # Root background
-    root.configure(bg=colors["bg"])
-
-    # Labels
-    for lbl in widgets.get("labels", []):
-        lbl.configure(bg=colors["label_bg"], fg=colors["label_fg"])
-
-    # Log frame & box
-    widgets["log_frame"].configure(bg=colors["bg"])
-    widgets["log_box"].configure(bg=colors["bg"], fg=colors["fg"])
-    widgets["log_label"].configure(bg=colors["bg"], fg=colors["fg"])
-
-    # Update log tags
-    widgets["log_box"].tag_config("timestamp", foreground=colors["log_tag_timestamp"])
-    widgets["log_box"].tag_config("level_info", foreground=colors["log_tag_info"])
-    widgets["log_box"].tag_config("level_conversion", foreground=colors["log_tag_conversion"])
-    widgets["log_box"].tag_config("level_warn", foreground=colors["log_tag_warn"])
-    widgets["log_box"].tag_config("level_error", foreground=colors["log_tag_error"])
-
-widgets = {
-    "labels": [logo_label, log_label, source_type_label],  # add any other labels you want themed
-    "log_frame": log_frame,
-    "log_box": log_box,
-    "log_label": log_label
-}
-
-# Apply theme at launch
-apply_theme(root, widgets)
-
-# --- POLL FOR DARK/LIGHT MODE CHANGES ---
-current_mode = None
-
-def poll_dark_mode():
-    global current_mode
-    dark = is_dark_mode()
-    if dark != current_mode:
-        current_mode = dark
-        apply_theme(root, widgets)
-    root.after(1000, poll_dark_mode)  # check every 2 seconds
-
-poll_dark_mode()  # start polling
+# Apply theme and start polling for system dark/light changes
+apply_theme(root)       # automatically detects widgets
+start_polling(root)     # keeps theme updated
 
 root.mainloop()
