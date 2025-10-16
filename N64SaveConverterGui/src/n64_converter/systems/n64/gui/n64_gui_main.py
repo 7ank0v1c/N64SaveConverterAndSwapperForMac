@@ -1,6 +1,8 @@
+# systems/n64/gui/n64_gui_main.py
+
 import os
 import threading
-from tkinter import PhotoImage, Label, Button, Frame, Text, Scrollbar, LEFT, RIGHT, BOTH, Y, E
+from tkinter import PhotoImage, Label, Button, Frame, Text, Scrollbar, LEFT, RIGHT, BOTH, Y
 from tkinter import ttk
 
 # --- N64 Constants ---
@@ -31,13 +33,12 @@ from systems.n64.gui.n64_gui_logic import setup_target_type_trace, setup_byteswa
 BASE_WIDTH = 730
 EXPANDED_WIDTH = 1000
 HEIGHT = 380
-VERTICAL_OFFSET = 100
+VERTICAL_OFFSET = 35
 
 
 def setup_n64_gui(parent):
     """Set up the N64 GUI inside the given parent frame or Tk instance."""
     gui_vars.init_vars(parent)
-
     log_visible = True
 
     # --------------------------
@@ -58,10 +59,9 @@ def setup_n64_gui(parent):
     # Load N64 Logo
     # --------------------------
     try:
-        # go up three levels from this file to project root
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
         logo_path = os.path.join(project_root, "resources", "n64_logo.png")
-        parent.n64_logo_img = PhotoImage(file=logo_path)  # keep reference
+        parent.n64_logo_img = PhotoImage(file=logo_path)
         logo_img = parent.n64_logo_img
         parent.iconphoto(True, logo_img)
     except Exception as e:
@@ -78,7 +78,7 @@ def setup_n64_gui(parent):
 
     # -----------------
     # File Selection Widgets
-    # --------------------------
+    # -----------------
     directory_entry = create_file_selection(
         parent,
         gui_vars.input_path,
@@ -96,29 +96,23 @@ def setup_n64_gui(parent):
     # --------------------------
     # Inline Log Frame
     # --------------------------
-    log_frame = Frame(parent, bg="#111")
+    log_frame = Frame(parent)
     log_frame.grid(row=0, column=3, rowspan=9, sticky="nsew", padx=5, pady=5)
     parent.grid_columnconfigure(3, weight=1)
 
-    Label(log_frame, text="Conversion Log:", bg="#111", fg="#fff").pack(anchor="w", padx=5, pady=(5,0))
+    log_label = Label(log_frame, text="Conversion Log:")
+    log_label.pack(anchor="w", padx=5, pady=(5, 0))
 
-    log_text_frame = Frame(log_frame, height=200, bg="#111")
+    log_text_frame = Frame(log_frame, height=200)
     log_text_frame.pack(fill=BOTH, expand=False, padx=5, pady=5)
 
-    log_box = Text(
-        log_text_frame,
-        height=25,
-        width=50,
-        wrap="word",
-        bg="#111",
-        fg="#ddd",
-        insertbackground="#fff"
-    )
+    log_box = Text(log_text_frame, height=25, width=50, wrap="word")
     log_box.pack(side=LEFT, fill=BOTH, expand=True)
 
     scrollbar = Scrollbar(log_text_frame, command=log_box.yview)
     scrollbar.pack(side=RIGHT, fill=Y)
     log_box.config(yscrollcommand=scrollbar.set)
+
     set_log_widget(log_box)
 
     # --------------------------
@@ -135,7 +129,8 @@ def setup_n64_gui(parent):
             center_window(EXPANDED_WIDTH, HEIGHT)
             log_visible = True
 
-    Button(parent, text="Show/Hide Log", command=toggle_log_window).grid(row=7, column=0, pady=15, padx=5)
+    toggle_btn = Button(parent, text="Show/Hide Log", command=toggle_log_window)
+    toggle_btn.grid(row=7, column=0, pady=15, padx=5)
 
     # --------------------------
     # Source/Target Widgets
@@ -151,14 +146,12 @@ def setup_n64_gui(parent):
     # --------------------------
     # Pad/Trim Checkbox
     # --------------------------
-    create_pad_trim_checkbox(parent, gui_vars.trim_pad_var)
+    pad_trim_chk = create_pad_trim_checkbox(parent, gui_vars.trim_pad_var)
 
     # --------------------------
     # Byte Swap Menu
     # --------------------------
     byteswap_menu = create_byteswap_menu(parent, gui_vars.byteswap_var)
-
-    # Force it to the 'default' option initially
     gui_vars.byteswap_var.set("default")
 
     # --------------------------
@@ -180,12 +173,12 @@ def setup_n64_gui(parent):
             daemon=True
         ).start()
 
-    # --------------------------
-    # Convert Button
-    # --------------------------
     convert_btn = Button(parent, text="Convert", width=20, command=start_conversion, state="disabled")
     convert_btn.grid(row=7, column=1, pady=15)
 
+    # --------------------------
+    # Convert Button Enable Logic
+    # --------------------------
     def update_convert_button(*args):
         if gui_vars.source_var.get() and gui_vars.target_var.get() and gui_vars.target_type_var.get():
             convert_btn.config(state="normal")
@@ -197,7 +190,7 @@ def setup_n64_gui(parent):
     gui_vars.target_type_var.trace_add("write", update_convert_button)
 
     # --------------------------
-    # GUI Reset Manager for Downstream Selections
+    # GUI Reset Manager
     # --------------------------
     def reset_byteswap(_):
         evaluate_byteswap_default(gui_vars.input_path, gui_vars.byteswap_var)
@@ -212,9 +205,7 @@ def setup_n64_gui(parent):
             gui_vars.byteswap_var,
             gui_vars.trim_pad_var
         ],
-        custom_resets={
-            id(gui_vars.byteswap_var): reset_byteswap
-        }
+        custom_resets={id(gui_vars.byteswap_var): reset_byteswap}
     )
 
     # --------------------------
