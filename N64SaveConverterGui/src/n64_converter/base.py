@@ -1,0 +1,253 @@
+import os
+import threading
+from tkinter import Tk, PhotoImage, Label, Button, Frame, Text, Scrollbar, LEFT, RIGHT, BOTH, Y, E
+from tkinter import ttk
+
+# --- N64 Constants ---
+from systems.n64.n64_constants import SOURCE_LIST, TARGET_LIST
+
+# --- Utilities ---
+from core.gui_logger import set_log_widget
+from core.theme_utils import apply_theme, start_polling
+from systems.n64.n64_utils import determine_valid_target_types, is_byteswap_allowed
+from systems.n64.gui import n64_gui_vars as gui_vars
+from gui.gui_utils import GUIResetManager
+
+# --- Callbacks ---
+from systems.n64.gui import n64_callbacks
+
+# --- Modularised modules ---
+from systems.n64.gui.n64_gui_widgets import (
+    create_file_selection,
+    create_source_target_widgets,
+    create_pad_trim_checkbox,
+    create_byteswap_menu
+)
+from systems.n64.gui.n64_gui_logic import setup_target_type_trace, setup_byteswap_trace, evaluate_byteswap_default
+
+# --------------------------
+# GUI Setup
+# --------------------------
+BASE_WIDTH = 730
+EXPANDED_WIDTH = 1000
+HEIGHT = 380
+VERTICAL_OFFSET = 100
+
+root = Tk()
+root.title("N64 Save File Converter")
+root.resizable(False, False)
+root.grid_columnconfigure(0, minsize=180)
+
+# Initialize Tk variables after creating root
+gui_vars.init_vars(root)
+
+# --------------------------
+# Center Window Slightly Higher
+# --------------------------
+def center_window(width, height, vertical_offset=VERTICAL_OFFSET):
+    root.update_idletasks()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width // 2) - (width // 2)
+    y = (screen_height // 2) - (height // 2) - vertical_offset
+    root.geometry(f"{width}x{height}+{x}+{y}")
+    return x, y
+
+window_x, window_y = center_window(EXPANDED_WIDTH, HEIGHT)
+log_visible = True
+
+# --------------------------
+# Load N64 Logo
+# --------------------------
+try:
+    logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "n64_logo.png")
+    logo_img = PhotoImage(file=logo_path)
+    root.iconphoto(True, logo_img)
+except Exception:
+    logo_img = None
+
+logo_label = Label(
+    root,
+    image=logo_img if logo_img else None,
+    text="N64 Logo" if not logo_img else "",
+    compound="top"
+)
+logo_label.grid(row=7, column=2, padx=10, pady=10, sticky=E)
+
+# --------------------------
+# File Selection Widgets
+# --------------------------
+directory_entry = create_file_selection(
+    root,
+    gui_vars.input_path,
+    gui_vars.source_type_var,
+    n64_callbacks.browse_file
+)
+
+def scroll_to_end(*args):
+    root.after_idle(lambda: directory_entry.xview_moveto(1))
+
+gui_vars.input_path.trace_add("write", scroll_to_end)
+directory_entry.bind("<KeyRelease>", lambda e: directory_entry.xview_moveto(1))
+directory_entry.bind("<<Paste>>", lambda e: root.after_idle(lambda: directory_entry.xview_moveto(1)))
+
+# --------------------------
+# Inline Log Frame
+# --------------------------
+log_frame = Frame(root, bg="#111")
+log_frame.grid(row=0, column=3, rowspan=9, sticky="nsew", padx=5, pady=5)
+root.grid_columnconfigure(3, weight=1)
+
+Label(log_frame, text="Conversion Log:", bg="#111", fg="#fff").pack(anchor="w", padx=5, pady=(5,0))
+
+log_text_frame = Frame(log_frame, height=200, bg="#111")
+log_text_frame.pack(fill=BOTH, expand=False, padx=5, pady=5)
+
+log_box = Text(
+    log_text_frame,
+    height=25,
+    width=50,
+    wrap="word",
+    bg="#111",
+    fg="#ddd",
+    insertbackground="#fff"
+)
+log_box.pack(side=LEFT, fill=BOTH, expand=True)
+
+scrollbar = Scrollbar(log_text_frame, command=log_box.yview)
+scrollbar.pack(side=RIGHT, fill=Y)
+log_box.config(yscrollcommand=scrollbar.set)
+set_log_widget(log_box)
+
+# --------------------------
+# Toggle Log Visibility
+# --------------------------
+def toggle_log_window():
+    global log_visible
+    if log_visible:
+        log_frame.grid_remove()
+        center_window(BASE_WIDTH, HEIGHT)
+        log_visible = False
+    else:
+        log_frame.grid()
+        center_window(EXPANDED_WIDTH, HEIGHT)
+        log_visible = True
+
+Button(root, text="Show/Hide Log", command=toggle_log_window).grid(row=7, column=0, pady=15, padx=5)
+
+# --------------------------
+# Source/Target Widgets
+# --------------------------
+source_menu, target_menu, target_type_menu = create_source_target_widgets(
+    root,
+    gui_vars.source_var,
+    gui_vars.target_var,
+    gui_vars.target_type_var,
+    gui_vars.source_type_var
+)
+
+# --------------------------
+# Pad/Trim Checkbox
+# --------------------------
+create_pad_trim_checkbox(root, gui_vars.trim_pad_var)
+
+# --------------------------
+# Byte Swap Menu
+# --------------------------
+byteswap_menu = create_byteswap_menu(root, gui_vars.byteswap_var)
+
+# --------------------------
+# Start Conversion (Threaded)
+# --------------------------
+def start_conversion():
+    threading.Thread(
+        target=n64_callbacks.convert_save_n64,
+        kwargs={
+            "input_path": gui_vars.input_path,
+            "source_var": gui_vars.source_var,
+            "source_type_var": gui_vars.source_type_var,
+            "target_var": gui_vars.target_var,
+            "target_type_var": gui_vars.target_type_var,
+            "byteswap_var": gui_vars.byteswap_var,
+            "trim_pad_var": gui_vars.trim_pad_var,
+            "log_box": log_box
+        },
+        daemon=True
+    ).start()
+
+# --------------------------
+# Convert Button
+# --------------------------
+convert_btn = Button(root, text="Convert", width=20, command=start_conversion, state="disabled")
+convert_btn.grid(row=7, column=1, pady=15)
+
+def update_convert_button(*args):
+    if gui_vars.source_var.get() and gui_vars.target_var.get() and gui_vars.target_type_var.get():
+        convert_btn.config(state="normal")
+    else:
+        convert_btn.config(state="disabled")
+
+gui_vars.source_var.trace_add("write", update_convert_button)
+gui_vars.target_var.trace_add("write", update_convert_button)
+gui_vars.target_type_var.trace_add("write", update_convert_button)
+
+# --------------------------
+# GUI Reset Manager for Downstream Selections
+# --------------------------
+def reset_byteswap(_):
+    evaluate_byteswap_default(gui_vars.input_path, gui_vars.byteswap_var)
+
+reset_manager = GUIResetManager()
+reset_manager.add_dependency(
+    gui_vars.input_path,
+    [
+        gui_vars.source_var,
+        gui_vars.target_var,
+        gui_vars.target_type_var,
+        gui_vars.byteswap_var,
+        gui_vars.trim_pad_var
+    ],
+    custom_resets={
+        id(gui_vars.byteswap_var): reset_byteswap
+    }
+)
+
+# --------------------------
+# GUI Logic Traces
+# --------------------------
+setup_target_type_trace(
+    gui_vars.source_var,
+    gui_vars.source_type_var,
+    gui_vars.target_var,
+    gui_vars.target_type_var,
+    target_type_menu,
+    determine_valid_target_types,
+    input_path_var=gui_vars.input_path,
+    convert_button=convert_btn
+)
+
+setup_byteswap_trace(
+    gui_vars.source_type_var,
+    gui_vars.target_type_var,
+    gui_vars.byteswap_var,
+    byteswap_menu,
+    is_byteswap_allowed,
+    input_path_var=gui_vars.input_path
+)
+
+# --------------------------
+# Auto-select RetroArch as source for SRM files
+# --------------------------
+def auto_select_retroarch(*args):
+    path = gui_vars.input_path.get()
+    if path.lower().endswith(".srm"):
+        gui_vars.source_var.set("RetroArch")
+
+gui_vars.input_path.trace_add("write", auto_select_retroarch)
+
+# --------------------------
+# Apply Theme and Start GUI
+# --------------------------
+apply_theme(root)
+start_polling(root)
+root.mainloop()

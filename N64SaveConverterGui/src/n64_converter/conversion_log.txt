@@ -1,0 +1,126 @@
+[2025-10-16 10:01:24] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 10:01:24] [INFO] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 10:01:24] [INFO] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 10:01:24] [INFO] Applying 4-byte swap...
+[2025-10-16 10:01:50] [INFO] Save operation cancelled by user.
+[2025-10-16 10:01:50] [SUCCESS] Conversion completed successfully!
+[2025-10-16 10:13:05] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 10:13:05] [INFO] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 10:13:05] [INFO] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 10:13:05] [INFO] Applying 4-byte swap...
+[2025-10-16 10:13:08] [INFO] Save operation cancelled by user.
+[2025-10-16 10:13:08] [SUCCESS] Conversion completed successfully!
+[2025-10-16 10:17:26] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 10:17:26] [INFO] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 10:17:26] [INFO] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 10:17:26] [INFO] Applying 2-byte swap...
+[2025-10-16 10:17:28] [INFO] Save operation cancelled by user.
+[2025-10-16 10:17:28] [SUCCESS] Conversion completed successfully!
+[2025-10-16 10:52:29] [ERROR] Conversion failed: log() got multiple values for argument 'level'
+[2025-10-16 10:55:25] [ERROR] Conversion failed: log() takes 1 positional argument but 3 positional arguments (and 1 keyword-only argument) were given
+[2025-10-16 10:56:50] [ERROR] Conversion failed: log() takes 1 positional argument but 3 positional arguments (and 1 keyword-only argument) were given
+[2025-10-16 10:58:59] [ERROR] Conversion failed: log() takes 1 positional argument but 3 positional arguments (and 1 keyword-only argument) were given
+[2025-10-16 11:06:44] [ERROR] Conversion failed: log() takes 1 positional argument but 3 positional arguments (and 1 keyword-only argument) were given
+[2025-10-16 11:13:17] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 11:13:17] [INFO] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 11:13:17] [INFO] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 11:13:17] [INFO] Applying 2-byte swap...
+[2025-10-16 11:13:33] [WARN] Save operation cancelled by user.
+[2025-10-16 11:13:33] [SUCCESS] Conversion completed successfully!
+[2025-10-16 11:16:10] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 11:16:10] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 11:16:10] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 11:16:10] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 11:16:20] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-111610_THE LEGEND OF ZELDA.sra
+[2025-10-16 11:16:25] [SUCCESS] Conversion completed successfully!
+[2025-10-16 11:19:46] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 11:19:46] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 11:19:46] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 11:19:46] [CONVERSION] Applying 4-byte swap...
+[2025-10-16 11:19:49] [WARN] Save operation cancelled by user.
+[2025-10-16 11:19:49] [SUCCESS] Conversion completed successfully!
+[2025-10-16 11:28:10] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 11:28:10] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 11:28:10] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 11:28:10] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 11:28:15] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-112810_THE LEGEND OF ZELDA.sra
+[2025-10-16 11:28:16] [SUCCESS] Conversion completed successfully!
+[2025-10-16 11:48:12] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 11:48:12] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 11:48:12] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 11:48:12] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 11:48:15] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-114812_THE LEGEND OF ZELDA.sra
+[2025-10-16 11:48:16] [SUCCESS] Conversion completed successfully!
+[2025-10-16 11:49:31] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 11:49:31] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 11:49:31] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 11:49:31] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 11:49:33] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-114931_THE LEGEND OF ZELDA.sra
+[2025-10-16 11:49:34] [SUCCESS] Conversion completed successfully!
+[2025-10-16 12:07:03] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 12:07:03] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 12:07:03] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 12:07:03] [CONVERSION] Applying 4-byte swap...
+[2025-10-16 12:07:05] [WARN] Save operation cancelled by user.
+[2025-10-16 12:07:05] [SUCCESS] Conversion completed successfully!
+[2025-10-16 12:36:17] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 12:36:17] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 12:36:17] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 12:36:17] [CONVERSION] Applying 4-byte swap...
+[2025-10-16 12:36:19] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-123617_THE LEGEND OF ZELDA.sra
+[2025-10-16 12:36:21] [SUCCESS] Conversion completed successfully!
+[2025-10-16 12:38:21] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 12:38:21] [WARN] No matching conversion found; using raw copy.
+[2025-10-16 12:38:21] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 12:38:21] [CONVERSION] No byte swap applied.
+[2025-10-16 12:38:29] [WARN] Save operation cancelled by user.
+[2025-10-16 12:38:29] [SUCCESS] Conversion completed successfully!
+[2025-10-16 12:46:51] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 12:46:51] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 12:46:51] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 12:46:51] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 12:46:53] [WARN] Save operation cancelled by user.
+[2025-10-16 12:46:53] [SUCCESS] Conversion completed successfully!
+[2025-10-16 13:15:51] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 13:15:51] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 13:15:51] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 13:15:51] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 13:15:53] [WARN] Save operation cancelled by user.
+[2025-10-16 13:15:53] [SUCCESS] Conversion completed successfully!
+[2025-10-16 13:31:15] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.srm
+[2025-10-16 13:31:15] [WARN] No matching conversion found; using raw copy.
+[2025-10-16 13:31:15] [CONVERSION] Resizing data to 2048 bytes (offset 0)
+[2025-10-16 13:31:15] [CONVERSION] No byte swap applied.
+[2025-10-16 13:31:17] [WARN] Save operation cancelled by user.
+[2025-10-16 13:31:17] [SUCCESS] Conversion completed successfully!
+[2025-10-16 14:26:57] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 14:26:57] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 14:26:57] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 14:26:57] [CONVERSION] Applying 4-byte swap...
+[2025-10-16 14:27:00] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-142657_THE LEGEND OF ZELDA.sra
+[2025-10-16 14:27:01] [SUCCESS] Conversion completed successfully!
+[2025-10-16 14:45:47] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 14:45:47] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 14:45:47] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 14:45:47] [CONVERSION] Applying 2-byte swap...
+[2025-10-16 14:45:48] [WARN] Save operation cancelled by user.
+[2025-10-16 14:45:48] [SUCCESS] Conversion completed successfully!
+[2025-10-16 15:12:48] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 15:12:48] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 15:12:48] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 15:12:48] [CONVERSION] Applying 4-byte swap...
+[2025-10-16 15:12:54] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-151248_THE LEGEND OF ZELDA.sra
+[2025-10-16 15:12:55] [SUCCESS] Conversion completed successfully!
+[2025-10-16 16:59:53] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.srm
+[2025-10-16 16:59:53] [WARN] No matching conversion found; using raw copy.
+[2025-10-16 16:59:53] [CONVERSION] Target is Native — using direct copy.
+[2025-10-16 16:59:53] [CONVERSION] Resizing data to 2048 bytes (offset 0)
+[2025-10-16 16:59:53] [CONVERSION] No byte swap applied.
+[2025-10-16 16:59:56] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-165953_THE LEGEND OF ZELDA.eep
+[2025-10-16 17:00:02] [SUCCESS] Conversion completed successfully!
+[2025-10-16 18:56:16] [INFO] Starting conversion: /Users/7ank0v1c/Desktop/Byte Swapper/THE LEGEND OF ZELDA.sra
+[2025-10-16 18:56:16] [CONVERSION] Using conversion table entry:  Native / Cart Dump - SRAM (.sra) - Project64/Mupen64 - SRAM (.sra) 
+[2025-10-16 18:56:16] [CONVERSION] Resizing data to 32768 bytes (offset 0)
+[2025-10-16 18:56:16] [CONVERSION] Applying 4-byte swap...
+[2025-10-16 18:56:19] [SUCCESS] File written successfully → /Users/7ank0v1c/Desktop/Byte Swapper/Converted_20251016-185616_THE LEGEND OF ZELDA.sra
+[2025-10-16 18:56:20] [SUCCESS] Conversion completed successfully!
