@@ -18,12 +18,12 @@ It is still a work in progress, and a while off from living up to its name.
 Currently, the only 'save core' that is functional, is for the n64, however a few things are still being worked on there also.
 
 'Save Core'? What is that?:
-Just thougt it sounded cool, the way I am approaching this is alsmot like creating a core, for each system.
+Just thougt it sounded cool, and made sense, so the way I am approaching this is by essentially making a 'save core', for each system.
 
 Currently, Universal Save Converter is a tool to convert N64 saves files for transfer between emulators and/or real N64 hardware.
 I do aim to continue working on this project to bring over all the main system save file conversion one at a time, I am currently focusing on the GUI, which is taking longer than i want. Once done the GUI will be modular for the different systems (mostly)
 
-Current Unviversal Save Converter Usage (N64 Only for Now)
+Current Usage (N64 Only for Now)
 =
 
 To convert:
@@ -111,6 +111,7 @@ All videogame and computer system logos used are the property of their respectiv
 All logos were taken from TheDayG0ne's set which can be found here: https://github.com/PRO100BYTE/console-logos
 
 These I believe where also originally taken from Dan Patrick's set, found here: https://archive.org/details/console-logos-professionally-redrawn-plus-official-versions
+
 
 
 
