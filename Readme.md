@@ -1,13 +1,19 @@
 <img src="https://raw.githubusercontent.com/7ank0v1c/Universal-Save-Converter/main/Source/universal_save_converter/resources/usc_logo_large.png" width="400">
 
-Originally Based on 'Daniel Falk's N64SaveConverterGui' tool
-Re-written from the ground up in python
 
-This is a work in progress and a while off from being functional, the only save core that is working currently is n64, but even that is incomplete
 
 ===
  About Universal Save Converter (USC)
 ===
+Originally Based on 'Daniel Falk's - N64SaveConverterGui' tool
+Re-written from the ground up in python
+
+This is a work in progress and a while off from being fully functional, I am just keeping this here to have it available online more easily for now.
+The only 'save core' that is reasonably functional is currently n64, but a few things need ironing out first.
+
+'Save Core'? What is that?:
+Just thougt it sounded cool, the way I am approaching this is alsmot like creating a core, for each system.
+
 Currently, Universal Save Converter is a tool to convert N64 saves files for transfer between emulators and/or real N64 hardware.
 I do aim to continue working on this project to bring over all the main system save file conversion one at a time, I am currently focusing on the GUI, which is taking longer than i want. Once done the GUI will be modular for the different systems (mostly)
 
@@ -85,6 +91,7 @@ after a save file has been converted with this program (output target set to Wii
  * I noticed exported SRAM saves from WiiU are 128 kilobytes. Just ignore it. Importing SRAM saves like LoZ:OoT at the standard size of 32 kilobytes works fine.
  * I noticed that SRAM saves created by Everdrive64 use the extention (.srm) instead of (.sra). No big deal. Just don't confuse those (.srm) saves with Retroarch saves which also use the (.srm) extension.
  * Wii64/not64 cannot read 4Kbit EEPROM saves at .5 kilobytes. The 4Kbit EEPROM must be padded to 2 kilobytes (i.e. the same size as 16Kbit EEPROM). Also Wii64 cannot read Controller Pak saves at 32 kilobytes. They must be padded to 128 kilobytes (i.e. 4x the size. It assumes a controller pak for each of the 4 controllers? Just my guess). This app takes care of all that for you.
+
 
 
 
