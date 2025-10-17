@@ -39,9 +39,9 @@ Lookup list:
  * Check the file extension of the file you selected to determine input/output type. Retroarch is always (.srm)
  * Otherwise, use the Lookup list under the Help menu.
 
-============================
- Info about N64 Saves Files
-============================
+
+Info about N64 Saves Files
+=
  
  * The Nintendo 64 has 5 save formats: 4Kbit EEPROM (.eep), 16Kbit EEPROM (.eep), SRAM (.sra), FlashRAM (.fla), and Controller Pak (.mpk)
  * The exact file sizes that N64 hardware generates for these save types are as follows:
@@ -54,9 +54,9 @@ Lookup list:
  * The Retroarch emulator has a unique size for all its games saves (regardless of console): 290 kilobytes as far as I can tell. Native N64 save files are padded to this size. And some of them store the actual save content at strange offsets. (Both front and back padding)
  * This is why I have created a "Standard Size" for these save types. The standard size is set to be the smallest file size to be compatible across all emulators/hardware. 
 
-===============================
- Standard Save File Type Sizes
-===============================
+
+Standard Save File Type Sizes
+=
 
  * All N64 Save file conversions will output the converted save file to the standard file type size for maximum compatibility
  * Here are the Standard Save File Sizes:
@@ -67,9 +67,8 @@ Lookup list:
    - Controller Pak (.mpk): 131,072 bytes (Padded to 4x the actual N64 hardware size to simulate 4 paks for the 4 controllers)
    - Retroarch Save (.srm): 290 kilobytes (Same as the real Retroarch save)
 
-==================
- Save File Notes
-==================
+Save File Notes
+=
 
  * SRAM and FLA saves need to be byteswapped when converting between PC emulators and Wii/WiiU/N64
  * Controller Pak and EEPROM saves do NOT need to be byteswapped when converting between PC Emulators and Wii/WiiU/N64. But good practice to at least do a resize to ensure compatibility.
@@ -90,6 +89,7 @@ after a save file has been converted with this program (output target set to Wii
  * I noticed exported SRAM saves from WiiU are 128 kilobytes. Just ignore it. Importing SRAM saves like LoZ:OoT at the standard size of 32 kilobytes works fine.
  * I noticed that SRAM saves created by Everdrive64 use the extention (.srm) instead of (.sra). No big deal. Just don't confuse those (.srm) saves with Retroarch saves which also use the (.srm) extension.
  * Wii64/not64 cannot read 4Kbit EEPROM saves at .5 kilobytes. The 4Kbit EEPROM must be padded to 2 kilobytes (i.e. the same size as 16Kbit EEPROM). Also Wii64 cannot read Controller Pak saves at 32 kilobytes. They must be padded to 128 kilobytes (i.e. 4x the size. It assumes a controller pak for each of the 4 controllers? Just my guess). This app takes care of all that for you.
+
 
 
 
