@@ -4,7 +4,7 @@ Universal Save Converter (USC)
 =
 
 
-About Universal Save Converter (USC)
+About
 =
 Originally Based on 'Daniel Falk's - N64SaveConverterGui' tool
 Re-written from the ground up in python
@@ -18,7 +18,7 @@ Just thougt it sounded cool, the way I am approaching this is alsmot like creati
 Currently, Universal Save Converter is a tool to convert N64 saves files for transfer between emulators and/or real N64 hardware.
 I do aim to continue working on this project to bring over all the main system save file conversion one at a time, I am currently focusing on the GUI, which is taking longer than i want. Once done the GUI will be modular for the different systems (mostly)
 
-Currently, Unviversal Save Converter Usage
+Current Unviversal Save Converter Usage (N64 Only for Now)
 =
 
 To convert:
@@ -106,6 +106,7 @@ All videogame and computer system logos used are the property of their respectiv
 All logos were taken from TheDayG0ne's set which can be found here: https://github.com/PRO100BYTE/console-logos
 
 These I believe where also originally taken from Dan Patrick's set, found here: https://archive.org/details/console-logos-professionally-redrawn-plus-official-versions
+
 
 
 
