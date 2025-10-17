@@ -1,4 +1,4 @@
-<img src="Source Code/universal_save_converter/resources/usc_logo.png" width="400">
+<img src="Source%20Code/universal_save_converter/resources/usc_logo.png" width="400">
 
 Originally Based on Daniel Falk's N64SaveConverterGui tool
 Re-written from the ground up in python
@@ -85,6 +85,7 @@ after a save file has been converted with this program (output target set to Wii
  * I noticed exported SRAM saves from WiiU are 128 kilobytes. Just ignore it. Importing SRAM saves like LoZ:OoT at the standard size of 32 kilobytes works fine.
  * I noticed that SRAM saves created by Everdrive64 use the extention (.srm) instead of (.sra). No big deal. Just don't confuse those (.srm) saves with Retroarch saves which also use the (.srm) extension.
  * Wii64/not64 cannot read 4Kbit EEPROM saves at .5 kilobytes. The 4Kbit EEPROM must be padded to 2 kilobytes (i.e. the same size as 16Kbit EEPROM). Also Wii64 cannot read Controller Pak saves at 32 kilobytes. They must be padded to 128 kilobytes (i.e. 4x the size. It assumes a controller pak for each of the 4 controllers? Just my guess). This app takes care of all that for you.
+
 
 
 
