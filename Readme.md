@@ -9,8 +9,13 @@ About
 Originally Based on 'Daniel Falk's - N64SaveConverterGui' tool
 Re-written from the ground up in python
 
-This is a work in progress and a while off from being fully functional, I am just keeping this here to have it available online more easily for now.
-The only 'save core' that is reasonably functional is currently n64, but a few things need ironing out first.
+This is my emulator/retro game save converter utility.
+
+It is my first true project coding something, and thought to start with an area I felt was a little lacking (more so for Mac users)
+However, becasue of this, please ensure you do a back-up of all your saves before using this.
+
+It is still a work in progress, and a while off from living up to its name.
+Currently, the only 'save core' that is functional, is for the n64, however a few things are still being worked on there also.
 
 'Save Core'? What is that?:
 Just thougt it sounded cool, the way I am approaching this is alsmot like creating a core, for each system.
@@ -106,6 +111,7 @@ All videogame and computer system logos used are the property of their respectiv
 All logos were taken from TheDayG0ne's set which can be found here: https://github.com/PRO100BYTE/console-logos
 
 These I believe where also originally taken from Dan Patrick's set, found here: https://archive.org/details/console-logos-professionally-redrawn-plus-official-versions
+
 
 
 
