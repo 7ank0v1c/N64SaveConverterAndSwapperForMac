@@ -6,6 +6,7 @@ from tkinter import Frame, Label, Button
 
 # Import system GUIs
 from systems.n64.gui.n64_gui_main import setup_n64_gui
+from systems.gba.gui.gba_gui_main import setup_gba_gui
 
 # Consoles grouped by manufacturer
 NINTENDO_HOME = ["NES", "SNES", "Nintendo 64", "Nintendo Virtual Boy", "Nintendo GameCube", "Nintendo Wii"]
@@ -17,10 +18,14 @@ SEGA_HANDHELD = ["Sega GameGear"]
 SONY_HOME = ["Sony PlayStation", "Sony PlayStation 2"]
 SONY_HANDHELD = ["Sony PlayStation Portable", "Sony PlayStation Vita"]
 
+PASTEL_DARK_BLUE = "#4A6FA5"
+PASTEL_HOVER_BLUE = "#5E84B8"
+TEXT_COLOR = "#1E3A5F"
+
 # Console → GUI map
 CONSOLE_GUI_MAP = {
     "Game Boy / Game Boy Color": None,
-    "Game Boy Advance": None,
+    "Game Boy Advance": setup_gba_gui,
     "Nintendo DS / Nintendo DSi": None,
     "NES": None,
     "SNES": None,
@@ -77,10 +82,10 @@ class TopLevelGUI:
         return len(longest_name) + 2
 
     def setup_logo(self):
-        """Persistent logo at the top-left with centered big bold title"""
+        """Persistent centered logo at the top, fallback to text if not found"""
         try:
             project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-            logo_path = os.path.join(project_root, "resources", "usc_logo.png")
+            logo_path = os.path.join(project_root, "resources", "new_usc_logo.png")
             self.logo_img = tk.PhotoImage(file=logo_path)
             self.root.iconphoto(True, self.logo_img)
         except Exception as e:
@@ -90,33 +95,28 @@ class TopLevelGUI:
         self.logo_frame = Frame(self.root)
         self.logo_frame.pack(side="top", fill="x", pady=10)
 
-        # Logo on the left
-        if self.logo_img:
-            self.logo_label = Label(self.logo_frame, image=self.logo_img)
-            self.logo_label.grid(row=0, column=0, padx=10, sticky="w")
-        else:
-            self.logo_label = Label(self.logo_frame, text="Universal Save Converter", font=("Arial", 16, "bold"))
-            self.logo_label.grid(row=0, column=0, padx=10, sticky="w")
-
-        # Big centered title
-        self.title_label = Label(
+        self.logo_label = Label(
             self.logo_frame,
-            text="Universal Save Converter",
-            font=("Arial", 32, "bold")
+            image=self.logo_img if self.logo_img else None,
+            text="Universal Save Converter" if not self.logo_img else "",
+            compound="left",
+            font=("Arial", 16, "bold")
         )
-        self.title_label.grid(row=0, column=0, padx=200)  # Centered with padding
-        self.logo_frame.grid_columnconfigure(0, weight=1)  # logo column can shrink
-        self.logo_frame.grid_columnconfigure(1, weight=1)  # title column centers
-        
+        self.logo_label.pack(anchor="center")  # Center horizontally
+
+    def _add_hover_effect(self, button):
+        """Add hover effect to a button"""
+        button.bind("<Enter>", lambda e: button.config(bg=PASTEL_HOVER_BLUE))
+        button.bind("<Leave>", lambda e: button.config(bg=PASTEL_DARK_BLUE))
+
     def show_console_selection(self):
         """Main console selection screen with manufacturer columns"""
         self._clear_current_frame()
         if self.console_frame:
-            self.console_frame.destroy()  # destroy old widgets
+            self.console_frame.destroy()
         self.console_frame = Frame(self.root, padx=20, pady=20)
         self.console_frame.pack(side="top", fill="both", expand=True)
 
-        # --- Select Console label below ---
         Label(
             self.console_frame,
             text="Select Console:",
@@ -132,30 +132,23 @@ class TopLevelGUI:
             ("Sony", SONY_HOME, SONY_HANDHELD),
         ]
 
-        # Determine max rows needed for any column
-        max_rows = max(len(home) + len(handheld) for _, home, handheld in manufacturers)
-
-        # Populate columns by manufacturer
         for col_index, (name, home_list, handheld_list) in enumerate(manufacturers):
-            Label(grid_frame, text=name, font=("Arial", 14, "bold")).grid(row=0, column=col_index, padx=20, pady=(0,5), sticky="w")
+            Label(grid_frame, text=name, font=("Arial", 14, "bold")).grid(row=0, column=col_index, padx=20, pady=(0, 5), sticky="w")
             row = 1
-            # Home consoles
-            for console in home_list:
-                Button(
+            for console in home_list + handheld_list:
+                btn = Button(
                     grid_frame,
                     text=console,
                     width=self.button_width,
-                    command=lambda c=console: self.load_console_gui(c, CONSOLE_GUI_MAP.get(c))
-                ).grid(row=row, column=col_index, padx=5, pady=2, sticky="w")
-                row += 1
-            # Handheld consoles below
-            for console in handheld_list:
-                Button(
-                    grid_frame,
-                    text=console,
-                    width=self.button_width,
-                    command=lambda c=console: self.load_console_gui(c, CONSOLE_GUI_MAP.get(c))
-                ).grid(row=row, column=col_index, padx=5, pady=2, sticky="w")
+                    command=lambda c=console: self.load_console_gui(c, CONSOLE_GUI_MAP.get(c)),
+                    bg=PASTEL_DARK_BLUE,
+                    fg=TEXT_COLOR,
+                    activebackground=PASTEL_HOVER_BLUE,
+                    activeforeground=TEXT_COLOR,
+                    relief="flat"
+                )
+                btn.grid(row=row, column=col_index, padx=5, pady=2, sticky="w")
+                self._add_hover_effect(btn)
                 row += 1
 
     def load_console_gui(self, console_name, gui_func):
@@ -167,26 +160,31 @@ class TopLevelGUI:
         self.current_frame = Frame(self.root)
         self.current_frame.pack(side="top", fill="both", expand=True)
 
-        # Back button
-        Button(
+        back_btn = Button(
             self.current_frame,
             text="Back",
             width=10,
-            command=self._back_to_console_selection
-        ).pack(anchor="nw", pady=(0,10), padx=10)
+            command=self._back_to_console_selection,
+            bg=PASTEL_DARK_BLUE,
+            fg=TEXT_COLOR,
+            activebackground=PASTEL_HOVER_BLUE,
+            activeforeground=TEXT_COLOR,
+            relief="flat"
+        )
+        back_btn.pack(anchor="nw", pady=(0, 10), padx=10)
+        self._add_hover_effect(back_btn)
 
         if gui_func is None:
             Label(
                 self.current_frame,
-                text=f"{console_name} GUI not implemented yet.",
+                text=f"{console_name} Coming Soon...",
                 font=("Arial", 14)
             ).pack(pady=50)
         else:
             top_window = tk.Toplevel(self.root)
-            self.toplevel_windows.append(top_window)  # <--- Track Toplevel
+            self.toplevel_windows.append(top_window)
             top_window.title(f"{console_name} Save Converter")
 
-            # --- Center Toplevel window horizontally and slightly higher vertically ---
             top_window.update_idletasks()
             win_width = top_window.winfo_width()
             win_height = top_window.winfo_height()
@@ -199,11 +197,10 @@ class TopLevelGUI:
             gui_func(top_window)
 
     def _back_to_console_selection(self):
-        # Destroy all Toplevel windows
         for win in self.toplevel_windows:
             if win.winfo_exists():
                 win.destroy()
-        self.toplevel_windows.clear()  # reset list
+        self.toplevel_windows.clear()
 
         self._clear_current_frame()
         self.show_console_selection()
