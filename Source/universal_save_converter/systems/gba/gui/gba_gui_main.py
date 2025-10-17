@@ -1,31 +1,31 @@
-# systems/n64/gui/n64_gui_main.py
+# systems/gba/gui/gba_gui_main.py
 
 import os
 import threading
 from tkinter import PhotoImage, Label, Button, Frame, Text, Scrollbar, LEFT, RIGHT, BOTH, Y
 from tkinter import ttk
 
-# --- N64 Constants ---
-from systems.n64.n64_constants import SOURCE_LIST, TARGET_LIST
+# --- gba Constants ---
+from systems.gba.gba_constants import SOURCE_LIST, TARGET_LIST
 
 # --- Utilities ---
 from core.gui_logger import set_log_widget
 from core.theme_utils import apply_theme, start_polling
-from systems.n64.n64_utils import determine_valid_target_types, is_byteswap_allowed
-from systems.n64.gui import n64_gui_vars as gui_vars
+from systems.gba.gba_utils import determine_valid_target_types, is_byteswap_allowed
+from systems.gba.gui import gba_gui_vars as gui_vars
 from gui.gui_utils import GUIResetManager
 
 # --- Callbacks ---
-from systems.n64.gui import n64_callbacks
+from systems.gba.gui import gba_callbacks
 
 # --- Modularised modules ---
-from systems.n64.gui.n64_gui_widgets import (
+from systems.gba.gui.gba_gui_widgets import (
     create_file_selection,
     create_source_target_widgets,
     create_pad_trim_checkbox,
     create_byteswap_menu
 )
-from systems.n64.gui.n64_gui_logic import setup_target_type_trace, setup_byteswap_trace, evaluate_byteswap_default
+from systems.gba.gui.gba_gui_logic import setup_target_type_trace, setup_byteswap_trace, evaluate_byteswap_default
 
 # --------------------------
 # Constants
@@ -36,8 +36,8 @@ HEIGHT = 380
 VERTICAL_OFFSET = 35
 
 
-def setup_n64_gui(parent):
-    """Set up the N64 GUI inside the given parent frame or Tk instance."""
+def setup_gba_gui(parent):
+    """Set up the gba GUI inside the given parent frame or Tk instance."""
     gui_vars.init_vars(parent)
     log_visible = True
 
@@ -59,13 +59,13 @@ def setup_n64_gui(parent):
     center_window(EXPANDED_WIDTH, HEIGHT)
 
     # --------------------------
-    # Load N64 Logo
+    # Load gba Logo
     # --------------------------
     try:
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
-        logo_path = os.path.join(project_root, "resources", "n64_logo.png")
-        parent.n64_logo_img = PhotoImage(file=logo_path)
-        logo_img = parent.n64_logo_img
+        logo_path = os.path.join(project_root, "resources", "gba_logo.png")
+        parent.gba_logo_img = PhotoImage(file=logo_path)
+        logo_img = parent.gba_logo_img
         parent.iconphoto(True, logo_img)
     except Exception as e:
         print(f"Could not load logo: {e}")
@@ -74,7 +74,7 @@ def setup_n64_gui(parent):
     logo_label = Label(
         parent,
         image=logo_img if logo_img else None,
-        text="N64 Logo" if not logo_img else "",
+        text="gba Logo" if not logo_img else "",
         compound="top"
     )
     logo_label.grid(row=7, column=2, padx=10, pady=10, sticky="E")
@@ -86,7 +86,7 @@ def setup_n64_gui(parent):
         parent,
         gui_vars.input_path,
         gui_vars.source_type_var,
-        n64_callbacks.browse_file
+        gba_callbacks.browse_file
     )
 
     def scroll_to_end(*args):
@@ -162,7 +162,7 @@ def setup_n64_gui(parent):
     # --------------------------
     def start_conversion():
         threading.Thread(
-            target=n64_callbacks.convert_save_n64,
+            target=gba_callbacks.convert_save_gba,
             kwargs={
                 "input_path": gui_vars.input_path,
                 "source_var": gui_vars.source_var,
