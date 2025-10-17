@@ -4,6 +4,7 @@
 
 =
  About Universal Save Converter (USC)
+=
 Originally Based on 'Daniel Falk's - N64SaveConverterGui' tool
 Re-written from the ground up in python
 
