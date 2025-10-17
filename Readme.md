@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/7ank0v1c/Universal-Save-Converter/main/Source/universal_save_converter/resources/usc_logo_large.png" width="350">
+<img src="https://raw.githubusercontent.com/7ank0v1c/Universal-Save-Converter/main/Source/universal_save_converter/resources/new_usc_logo_large.png" width="350">
 
 Universal Save Converter (USC)
 =
@@ -111,6 +111,7 @@ All videogame and computer system logos used are the property of their respectiv
 All logos were taken from TheDayG0ne's set which can be found here: https://github.com/PRO100BYTE/console-logos
 
 These I believe where also originally taken from Dan Patrick's set, found here: https://archive.org/details/console-logos-professionally-redrawn-plus-official-versions
+
 
 
 
