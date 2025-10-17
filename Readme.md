@@ -91,16 +91,19 @@ after a save file has been converted with this program (output target set to Wii
  * Wii64/not64 cannot read 4Kbit EEPROM saves at .5 kilobytes. The 4Kbit EEPROM must be padded to 2 kilobytes (i.e. the same size as 16Kbit EEPROM). Also Wii64 cannot read Controller Pak saves at 32 kilobytes. They must be padded to 128 kilobytes (i.e. 4x the size. It assumes a controller pak for each of the 4 controllers? Just my guess). This app takes care of all that for you.
 
 
+Thanks
+=
+
+Thanks to Dan Patrick & The DayG0ne for your logo set.
+Also thanks to Daniel Falk, for your initial work on your N64SaveConverterGui' tool, which inspired me to write this
 
 
+License
+=
 
+All videogame and computer system logos used are the property of their respective Developers/Producers/Distributors/Licensors.
 
-
-
-
-
-
-
+All logos were taken from TheDayG0ne's set, which was also taken from Dan Patrick's set
 
 
 
