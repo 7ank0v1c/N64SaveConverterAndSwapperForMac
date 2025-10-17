@@ -104,7 +104,8 @@ All videogame and computer system logos used are the property of their respectiv
 
 All logos were taken from TheDayG0ne's set which can be found here: https://github.com/PRO100BYTE/console-logos
 
-Similarly it was originally taken from Dan Patrick's set, also found here: https://archive.org/details/console-logos-professionally-redrawn-plus-official-versions
+These I believe where also originally taken from Dan Patrick's set, found here: https://archive.org/details/console-logos-professionally-redrawn-plus-official-versions
+
 
 
 
