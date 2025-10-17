@@ -94,8 +94,7 @@ after a save file has been converted with this program (output target set to Wii
 Thanks
 =
 
-Thanks to Dan Patrick & The DayG0ne for your logo set.
-Also thanks to Daniel Falk, for your initial work on your N64SaveConverterGui' tool, which inspired me to write this
+A big shout-out to Dan Patrick & The DayG0ne for your logo set, and to Daniel Falk for your work on your 'N64SaveConverterGui' tool, which was what inspired me to write this tool.
 
 
 License
@@ -104,6 +103,7 @@ License
 All videogame and computer system logos used are the property of their respective Developers/Producers/Distributors/Licensors.
 
 All logos were taken from TheDayG0ne's set, which was also taken from Dan Patrick's set
+
 
 
 
